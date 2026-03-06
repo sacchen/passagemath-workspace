@@ -16,8 +16,6 @@ To optimize for **correctness** and **subscription limits**, agents must adhere 
 | **Copilot (Sonnet 4.6)** | **The Draftsman** | Standard feature implementation, fixing "Tractable" bugs, boilerplate. | **Switch to Gemini** if you cannot find a reference across the full monorepo. |
 | **Copilot (GPT-5 mini)** | **The Polisher** | Documentation, docstrings, `uv` config updates, Simon Willison "Perfect Commit" bundles. | **Switch to Sonnet** if logic changes are required. |
 
-**Standard Protocol**: Before starting any task, state your role: *"I am acting as [Role]. My goal for this session is [Goal]."*
-
 ---
 
 ## Project directives
@@ -39,10 +37,8 @@ as a primary tool.
 
 ## User goals
 
-The user is contributing to passagemath to demonstrate engineering competence
-to Matthias Koeppe (project maintainer, UC Davis). The goal is visibility
-through technically correct, architecturally-aware contributions — not
-volume.
+The goal is visibility through technically correct, architecturally-aware
+contributions — not volume.
 
 **Key constraint**: Quality over quantity. One perfect PR > five mediocre
 ones. Matthias will see through anything superficial.

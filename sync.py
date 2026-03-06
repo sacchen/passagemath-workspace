@@ -1,66 +1,78 @@
 # /// script
-# dependencies = ["sh"]
+# dependencies = []
 # ///
-import sh
 import os
 import sys
+import subprocess
+from pathlib import Path
 from datetime import datetime
 
-# configuration
-# using absolute paths to avoid any shell ambiguity
-OBSIDIAN_SRC = os.path.expanduser(
-    "~/foundry/sandbox/passagemath-obsidian/passagemath-public"
-)
-REPO_ROOT = os.path.expanduser("~/foundry/sandbox/passagemath-workspace")
-LOG_DEST = os.path.join(REPO_ROOT, "logs")
+# --- configuration ---
+# Source is your local-only Obsidian folder
+SRC = Path.home() / "foundry/sandbox/passagemath-obsidian/passagemath-public"
+REPO = Path.home() / "foundry/sandbox/passagemath-workspace"
+LOGS = REPO / "logs"
 
 
-def sync():
-    # 1. source validation
-    if not os.path.exists(OBSIDIAN_SRC):
-        print(f"error: source {OBSIDIAN_SRC} not found. is the obsidian folder moved?")
-        sys.exit(1)
+def run(*args, **kwargs):
+    """transparent wrapper for shell commands; streams output for debugging."""
+    kwargs.setdefault("check", True)
+    return subprocess.run(args, **kwargs)
 
-    os.chdir(REPO_ROOT)
 
-    # 2. remote sync (pull first to avoid push rejection)
-    print("reaping remote updates...")
-    try:
-        sh.git.pull("origin", "main", "--rebase")
-    except sh.ErrorReturnCode as e:
-        print(
-            f"pull failed (conflict?). fix manually in {REPO_ROOT}.\n{e.stderr.decode()}"
-        )
-        sys.exit(1)
+def sync(dry_run=False):
+    if not SRC.exists() or not REPO.exists():
+        sys.exit("fatal: missing paths. check SRC and REPO configuration.")
 
-    # 3. mirror obsidian -> logs/
-    print(f"mirroring: {OBSIDIAN_SRC} -> {LOG_DEST}")
-    os.makedirs(LOG_DEST, exist_ok=True)
-    sh.rsync(
+    os.chdir(REPO)
+
+    # 1. sync remote state to avoid push rejection
+    print("pulling remote updates...")
+    run("git", "pull", "origin", "main", "--rebase")
+
+    # 2. mirror obsidian -> workspace logs/
+    LOGS.mkdir(exist_ok=True)
+    print(f"mirroring: {SRC} -> {LOGS}")
+
+    rsync_cmd = [
+        "rsync",
         "-av",
         "--delete",
         "--exclude",
         ".obsidian/",
         "--exclude",
         ".DS_Store",
-        f"{OBSIDIAN_SRC}/",
-        f"{LOG_DEST}/",
+    ]
+    if dry_run:
+        rsync_cmd.append("-n")
+    rsync_cmd.extend([f"{SRC}/", f"{LOGS}/"])
+    run(*rsync_cmd)
+
+    if dry_run:
+        print("\ndry run complete. no git mutation occurred.")
+        return
+
+    # 3. isolate automation to logs/
+    # manual code changes in kit/ remain unstaged and safe
+    run("git", "add", "logs/")
+
+    # 4. commit & push ONLY if the staged index for logs/ has changed
+    # --cached compares HEAD to the index we just updated
+    status = run(
+        "git", "diff-index", "--cached", "--quiet", "HEAD", "--", "logs/", check=False
     )
 
-    # 4. stage all (kit/, logs/, README, sync.py)
-    sh.git.add("-A")
+    if status.returncode == 0:
+        print("logs clean. nothing to push.")
+        return
 
-    # 5. atomic check & push
-    try:
-        # git diff-index --quiet HEAD returns 0 if no changes
-        sh.git("diff-index", "--quiet", "HEAD", "--")
-        print("nothing new to reap.")
-    except sh.ErrorReturnCode_1:
-        ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-        sh.git.commit("-m", f"reap: {ts}")
-        sh.git.push("origin", "main")
-        print(f"success: workspace pushed at {ts}")
+    # 5. atomic automated commit
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+    run("git", "commit", "-m", f"log sync: {ts}")
+    run("git", "push", "origin", "main")
+    print(f"success: research stream pushed @ {ts}")
 
 
 if __name__ == "__main__":
-    sync()
+    # execute sync; supports --dry-run for testing
+    sync(dry_run="--dry-run" in sys.argv)

@@ -1,36 +1,50 @@
-# Passagemath Agent Kit (Developer Infrastructure)
+# passagemath-workspace
 
-This repository contains the **Developer Kit** used to optimize agentic workflows for contributing to the [passagemath](https://github.com/passagemath/passagemath) monorepo.
-
-## 🤖 The Multi-Agent Orchestration (Roles & Quota Management)
-
-Contributing to a complex math-oriented monorepo requires high precision and strategic context usage. This kit employs a **Role-Based Chain of Command** to ensure correctness and efficient subscription quota management.
-
-| Agent/Model | Identity | Primary Domain | When to Delegate/Switch |
-| --- | --- | --- | --- |
-| **Gemini CLI** | **The Scout** | Repo-wide search, log forensics, finding "Neglected" patterns. | **Delegate implementation** once files are identified. |
-| **Claude Code** | **The Architect** | High-logic refactoring, complex Python/Cython logic. | **Switch to Copilot** for unit tests or boilerplate. |
-| **Copilot (Sonnet 4.6)** | **The Draftsman** | Standard feature implementation, fixing "Tractable" bugs. | **Switch to Gemini** if context is missing across the monorepo. |
-| **Copilot (GPT-5 mini)** | **The Polisher** | Documentation, docstrings, `uv` config updates. | **Switch to Sonnet** if logic changes are required. |
-
-## 📐 The S.N.T. Leverage Framework
-
-We prioritize contributions based on their **High-Leverage Potential**:
-
-1.  **SCALE**: Infrastructure/dependency depth (e.g., `.m4` templates for 100+ modular packages).
-2.  **NEGLECTED**: "Modularization Blind Spots" (e.g., silent `ImportError` masks resulting in runtime `NameError`).
-3.  **TRACTABLE**: Surgical fixes with minimal review burden and clear reproduction scripts.
-
-## 🛠️ Usage Instructions
-
-To use this kit without polluting the main `passagemath` codebase:
-
-1.  Clone this kit into a separate directory: `~/foundry/passagemath-agent-kit`.
-2.  In your `passagemath` working directory, symlink the files:
-    ```bash
-    ln -s ~/foundry/passagemath-agent-kit/AGENTS.md .
-    ```
-3.  Add `AGENTS.md` and `AGENT_STATE.md` to your **global gitignore** (`~/.gitignore_global`) to ensure they never appear in Pull Requests.
+active research workbench for [passagemath](https://github.com/passagemath/passagemath). this is a live stream of logic trails, agentic workflows, and debugging logs. **the primary value is in the logs; the code is secondary infrastructure.**
 
 ---
-*Created by [sacchen](https://github.com/sacchen)*
+
+## research stream (`/logs`)
+
+unstructured markdown mirrored from local obsidian.
+
+* **llm logs:** raw traces and reasoning chains from gemini, claude, and gpt.
+* **logic trails:** messy proofs, modularization strategies, and bug forensics.
+* **temporal tracking:** use git history to follow real-time progress on specific sub-problems.
+
+## agent infra (`/src`)
+
+roles optimized for subscription quota and logic depth:
+
+| agent | identity | domain |
+| --- | --- | --- |
+| **gemini** | **the scout** | repo-wide forensics & "neglected" pattern discovery. |
+| **claude** | **the architect** | high-logic python/cython refactoring. |
+| **sonnet** | **the draftsman** | feature implementation & "tractable" bug fixes. |
+| **gpt-5 mini** | **the polisher** | documentation & `uv` config updates. |
+
+## leverage (s.n.t. framework)
+
+contributions prioritized by:
+
+1. **scale:** infrastructure/dependency depth (e.g., `.m4` templates).
+2. **neglected:** modularization blind spots (e.g., silent `ImportError` masks).
+3. **tractable:** surgical fixes with minimal review burden.
+
+## setup
+
+clone outside the monorepo and symlink to avoid pollution.
+
+```bash
+# 1. sync logs (via uv run sync.py)
+# 2. symlink for context
+ln -s ~/passagemath-workspace/logs/AGENT_STATE.md .
+
+```
+
+add `AGENT_STATE.md` to your `~/.gitignore_global`.
+
+---
+
+*maintained by [sacchen*](https://github.com/sacchen)
+

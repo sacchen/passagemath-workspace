@@ -14,11 +14,7 @@ I look for work in three categories:
 
 ## Comparative advantage
 
-My edge is AI-assisted systematic analysis — AST scanners across the whole codebase, CI log forensics across platforms, triaging 45 hits in an afternoon. Matthias can write patches; the bottleneck is triage at scale. That's the gap I fill.
-
-## Shifting gears
-
-The highest-leverage thing shifts over time. Right now it's making work available for others — scoping issues with root cause, exact files, and verification method so people newer to the codebase can contribute without spending a week orienting. One well-scoped issue unblocks multiple people.
+My edge is AI-assisted systematic analysis — AST scanners across the whole codebase, CI log forensics across platforms, triaging 45 hits in an afternoon. The highest-leverage thing shifts over time. Right now it's scoping shovel-ready issues: root cause identified, exact files and lines, verification method included. Making it easy for people to contribute compounds more than contributing directly.
 
 ## Quality bar
 

@@ -34,7 +34,7 @@ issues filed by the maintainer, or course-adjacent bugs.
 * **PR:** https://github.com/passagemath/passagemath/pull/2253
 * `cached_number_of_partitions` now bound to `None` on ImportError.
 
-### B — Meta-issue #2254 (Open, PRs filed)
+### B — Meta-issue #2254 (Closed, PRs filed)
 
 * **Issue:** https://github.com/passagemath/passagemath/issues/2254
 * Full triage of ~45 scanner hits posted.

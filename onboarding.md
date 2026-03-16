@@ -17,12 +17,15 @@ passagemath-pari         # number theory via PARI/GP
 The source code lives in one monorepo (`passagemath/passagemath`). Each package is a different slice of `src/sage/`. Contributing means fixing bugs or adding features in `src/sage/` — the packages are generated from the same source.
 
 ## Setup
-
 Fork [passagemath/passagemath](https://github.com/passagemath/passagemath) on GitHub, then:
 
 ```bash
+# Install uv ([docs.astral.sh/uv/](https://docs.astral.sh/uv/))
+curl -LsSf https://astral.sh/uv/install.sh | sh    # on mac/linux
+
 git clone https://github.com/YOUR_USERNAME/passagemath
 cd passagemath
+uv venv
 uv pip install passagemath-combinat   # or passagemath-plot, passagemath-polyhedra
 ```
 

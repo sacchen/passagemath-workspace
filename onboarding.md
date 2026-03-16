@@ -95,8 +95,4 @@ git push -u origin fix/short-description
 
 One PR, one issue, one issue number in the commit message. The commit message explains *why* the change was made, not just what changed.
 
-## What good looks like
-
-The reviewer should be able to read the commit and know: what was wrong, what the fix is, and that it works — without asking you anything. The doctest is your proof.
-
-Don't submit style-only changes, docstring reformatting, or changes to code you haven't run.
+A good commit stands alone: what changed, why, and a doctest showing it works. Style-only changes, docstring reformatting, and untested edits aren't contributions here.

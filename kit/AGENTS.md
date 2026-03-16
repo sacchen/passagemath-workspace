@@ -39,7 +39,9 @@ tell the user to switch.
 ## User goals
 
 Quality over quantity. One correct, architecturally-aware PR is worth more
-than five superficial ones.
+than five superficial ones. Current focus: shovel-ready issues and multiplier
+work — scoping problems so others can execute. Direct technical contributions
+are reactive.
 
 ## Work classification (S.N.T.)
 
@@ -63,7 +65,7 @@ Use this lens when evaluating candidates for contribution:
 * **Prove it works**: manual test first, then automated test. Do not ship
   unverified diffs.
 * **No unsolicited cleanup**: PEP8 sweeps, typo PRs, docstring reformatting
-  are explicitly rejected. Math maintainers read these as "I ran a linter."
+  are explicitly rejected.
 * **Understand before touching**: read the code, trace the execution path,
   understand the architecture before proposing any change.
 
@@ -72,6 +74,7 @@ Use this lens when evaluating candidates for contribution:
 ## GitHub identity
 
 * Account: `sacchen`
+* Org member: `passagemath`
 * Fork of monorepo: `sacchen/passagemath`
 * Fork of mip package: `sacchen/passagemath-pkg-numerical-interactive-mip`
 
@@ -115,12 +118,11 @@ Use this lens when evaluating candidates for contribution:
 
 ## Completed contributions
 
-### PR #6 — exception types in mip backends (Open)
+### PR #6 — exception types in mip backends (Merged)
 
 * **PR:** https://github.com/passagemath/passagemath-pkg-numerical-interactive-mip/pull/6
 * **Issue:** https://github.com/passagemath/passagemath-pkg-numerical-interactive-mip/issues/5
-* **Branch:** `fix/exception-types-backend-dictionaries`
-* Summary: Corrected `AttributeError` to `ValueError`/`RuntimeError` in
+* Summary: `AttributeError` → `ValueError`/`RuntimeError` in
   `abstract_backend_dictionary.py` and `glpk_backend_dictionary.py`.
 
 ### PR #2237 — replace pkg_resources at configure time (Merged)
@@ -129,11 +131,11 @@ Use this lens when evaluating candidates for contribution:
 * **Lesson:** Configure-time deps need registration in: 1. the M4 macro,
   2. `pkgs/sage-conf/pyproject.toml.m4`, 3. `.github/workflows/mingw.yml`.
 
-### Issue #2239 — PIP_FIND_LINKS invalid URI on Windows
+### Issue #2239 — PIP_FIND_LINKS invalid URI on Windows (Acted on)
 
-* Acted on by Matthias within 35 minutes of report.
+* Fix credited in PR #2240. Responded to within 35 minutes of filing.
 
-### PR #2253 — Fix NameError in Partitions.cardinality() (Filed)
+### PR #2253 — Fix NameError in Partitions.cardinality() (Merged)
 
 * **PR:** https://github.com/passagemath/passagemath/pull/2253
 * **Issue:** https://github.com/passagemath/passagemath/issues/2243
@@ -141,25 +143,43 @@ Use this lens when evaluating candidates for contribution:
 * **File:** `src/sage/combinat/partition.py`
 * Summary: `except ImportError: pass` → `cached_number_of_partitions = None`.
   `cardinality()` falls back to `_cardinality_from_iterator()` for n≤10,
-  raises `FeatureNotPresentError` for n>10. Same guard added to
-  `random_element_uniform()` and `number_of_partitions()`.
+  raises `FeatureNotPresentError` for n>10.
 
-### Issue #2254 — Meta: NameError antipattern in modular installs (Filed)
+### Issue #2254 — Meta: NameError antipattern in modular installs (Open)
 
 * **Issue:** https://github.com/passagemath/passagemath/issues/2254
-* Tracks the broader `except ImportError: pass` → unbound name → NameError
-  bug class. Confirmed real cases: `ell_point.py` (pari, 5+ methods),
-  `number_field.py` (pari, ~24–25 executable non-doctest uses).
-* `chart_func.py` (sympy) — **false positive**: sympy is a standard
-  dependency, always present. Do not file a PR for this.
-* Next PRs should fix `ell_point.py` and `number_field.py` using the pattern
-  from #2253.
+* Full triage of ~45 scanner hits posted. PRs #2282 and #2283 address the
+  confirmed cases.
+
+### PR #2282 — pari NameError in ell_point.py and number_field.py (Open)
+
+* **PR:** https://github.com/passagemath/passagemath/pull/2282
+* **Branch:** `fix/pari-namedror-ell-nf`
+* ell_point.py (6 methods) + number_field.py (8 methods) + integer_mod_ring.py,
+  cusps.py, binary_qf.py, calculus_method.py
+
+### PR #2283 — unbound imports followup (Open)
+
+* **PR:** https://github.com/passagemath/passagemath/pull/2283
+* **Branch:** `fix/unbound-imports-followup-2254`
+* padic_extension_leaves.py, multi_polynomial_ideal.py, chart_func.py cleanup,
+  tools/check_unbound_imports.py AST checker
+
+### Issue #2256 — doctest regressions in test-mod CI (Closed/fixed by PR #2257)
+
+* automatic_semigroup.py missing `# needs sage.groups` guards
+* lazy_attribute.pyx hardcoded line number
+
+### Shovel-ready issues filed
+
+* **#2236** — plot display in plain Python kernels (implementation spec in comments)
+* **#2284** — WASM recipe contribution guide
 
 ---
 
 ## The FeatureNotPresentError fix pattern
 
-Matthias endorsed this in #2243. Apply it to all future unbound-import bugs:
+Endorsed in #2243. Apply to all future unbound-import bugs:
 
 ```python
 # module level
@@ -187,21 +207,19 @@ if x_func is None:
 * **sympy**: standard pip dependency (`build/pkgs/sympy`, type=`standard`).
   Always available when `passagemath-symbolics` is installed. Any
   `try: import sympy / except ImportError: pass` blocks are legacy no-ops.
-  `chart_func.py` sympy diagnosis was a false positive.
 * **pari / cypari2**: optional, gated by `passagemath-pari`. The
   `try/except ImportError` pattern in `ell_point.py` and `number_field.py`
-  genuinely leaves `pari` unbound — those are real bugs.
+  genuinely leaves `pari` unbound — real bugs, addressed in PR #2282.
 
 ## Known false positives — do not file PRs
 
-* `chart_func.py` — sympy is always present (see above)
+* `chart_func.py` — sympy is always present
 * grep count for `pari` uses in `number_field.py`: raw `grep -v "sage:"` does
-  NOT exclude indented doctest lines (`            sage: pari(...)`). Real
-  executable count is ~24–25, not the inflated "43" or "27" figures.
+  NOT exclude indented doctest lines. Real executable count is ~24–25.
 
 ## Dead ends — do not revisit
 
-* **uv CI migration**: Matthias has issue #2094 open. He will drive this.
+* **uv CI migration**: tracked in issue #2094. Will be driven upstream.
 * **PEP517/setup.py audit**: already on `setuptools.build_meta`. Non-issue.
 * **Issue #2225 and Windows doctest quirks (#2222, #2227, #2223)**: need
   Windows environment. Unresolvable locally.

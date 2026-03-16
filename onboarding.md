@@ -1,5 +1,21 @@
 # Contributing to passagemath
 
+## What is this
+
+[SageMath](https://www.sagemath.org/) is a 30-year-old open-source math platform — a unified interface to hundreds of math libraries (PARI, FLINT, GAP, Singular, ...) plus a large Python library covering combinatorics, number theory, geometry, algebra, and more. It has always been installed as one giant monolithic package.
+
+passagemath is a fork that breaks SageMath into small, pip-installable pieces. Instead of installing everything, you install only what you need:
+
+```
+passagemath-combinat     # combinatorics
+passagemath-polyhedra    # polyhedral geometry, linear programming
+passagemath-plot         # 2D/3D plotting
+passagemath-pari         # number theory via PARI/GP
+...
+```
+
+The source code lives in one monorepo (`passagemath/passagemath`). Each package is a different slice of `src/sage/`. Contributing means fixing bugs or adding features in `src/sage/` — the packages are generated from the same source.
+
 ## Setup
 
 Fork [passagemath/passagemath](https://github.com/passagemath/passagemath) on GitHub, then:
@@ -8,10 +24,9 @@ Fork [passagemath/passagemath](https://github.com/passagemath/passagemath) on Gi
 git clone https://github.com/YOUR_USERNAME/passagemath
 cd passagemath
 uv pip install passagemath-combinat   # or passagemath-plot, passagemath-polyhedra
-source .venv/bin/activate
 ```
 
-uv creates `.venv` automatically on first install.
+uv creates `.venv` automatically on first install. No activation needed — prefix commands with `uv run`.
 
 ## Repo structure
 
@@ -25,15 +40,16 @@ pkgs/              # one subdirectory per installable package
 ## Run a doctest
 
 ```bash
-python -m sage.doctest src/sage/combinat/partition.py
+uv run python -m sage.doctest src/sage/combinat/partition.py
 ```
 
-Quick manual check in a Python shell:
+Quick manual check:
 
-```python
+```bash
+uv run python -c "
 from sage.combinat.partition import Partitions
-Partitions(5).cardinality()
-# 7
+print(Partitions(5).cardinality())  # 7
+"
 ```
 
 ## Find work
@@ -70,7 +86,7 @@ The test passes if the output matches. The reader sees exactly what to expect. O
 git checkout -b fix/short-description
 
 # edit, then verify
-python -m sage.doctest src/sage/path/to/file.py
+uv run python -m sage.doctest src/sage/path/to/file.py
 
 git add src/sage/path/to/file.py
 git commit -m "Fix: short description (#ISSUE_NUMBER)"

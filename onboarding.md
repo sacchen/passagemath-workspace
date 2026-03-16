@@ -17,19 +17,23 @@ passagemath-pari         # number theory via PARI/GP
 The source code lives in one monorepo (`passagemath/passagemath`). Each package is a different slice of `src/sage/`. Contributing means fixing bugs or adding features in `src/sage/` — the packages are generated from the same source.
 
 ## Setup
+
+Install [uv](https://docs.astral.sh/uv/) (see the docs for Windows instructions):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
 Fork [passagemath/passagemath](https://github.com/passagemath/passagemath) on GitHub, then:
 
 ```bash
-# Install uv ([docs.astral.sh/uv/](https://docs.astral.sh/uv/))
-curl -LsSf https://astral.sh/uv/install.sh | sh    # on mac/linux
-
 git clone https://github.com/YOUR_USERNAME/passagemath
 cd passagemath
 uv venv
 uv pip install passagemath-combinat   # or passagemath-plot, passagemath-polyhedra
 ```
 
-uv creates `.venv` automatically on first install. No activation needed — prefix commands with `uv run`.
+No activation needed — prefix commands with `uv run`.
 
 ## Repo structure
 
@@ -57,9 +61,7 @@ print(Partitions(5).cardinality())  # 7
 
 ## Find work
 
-Open issues: https://github.com/passagemath/passagemath/issues
-
-[`good first issue`](https://github.com/passagemath/passagemath/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) is the right filter to start. Comment "I'm working on this" to claim one.
+Start here: [Shovel-ready issues for the Polyhedral Geometry and Optimization team](https://github.com/passagemath/passagemath/issues/2269#issuecomment-4070368357) — curated issues with full specs, tiered by difficulty. Pick one that fits your background and comment "I'm working on this" to claim it.
 
 ## The perfect commit
 

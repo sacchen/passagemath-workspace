@@ -13,7 +13,7 @@ uv tool install pretext   # to build/preview the book locally
 
 ## What we're doing
 
-Right now the book tells students to sign up for CoCalc to run code. We want to update it so students can use Google Colab + passagemath instead — no account wall, no CoCalc-specific workflow. Along the way, a few Sage-only syntax quirks need swapping for plain Python.
+Right now the book tells students to sign up for CoCalc to run code. We want to update it so students can use Google Colab + passagemath instead — no platform-specific setup, no account required. Along the way, a few Sage-only syntax quirks need swapping for plain Python.
 
 There are three layers of work, roughly in order of effort.
 

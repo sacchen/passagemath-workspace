@@ -114,7 +114,7 @@ If CI is red on something you did touch: fix it locally, run the doctest again, 
 
 [PR #2253](https://github.com/passagemath/passagemath/pull/2253) is a good example of a complete contribution. Here's what the cycle looked like:
 
-**1. Find the issue.** Running basic commands in a notebook surfaced a `NameError` from `Partitions(5).cardinality()` in environments without `passagemath-flint`. Filed it as issue #2243 and investigated.
+**1. Find the issue.** Running basic commands in a notebook surfaced a `NameError` from `Partitions(5).cardinality()` in environments without `passagemath-flint`. Filed it as issue [#2243](https://github.com/passagemath/passagemath/issues/2243) and investigated.
 
 **2. Reproduce it.** In a venv with `passagemath-combinat` but not `passagemath-flint`:
 
@@ -135,7 +135,7 @@ Partitions(5).cardinality()  # NameError: name 'cached_number_of_partitions' is 
 uv run python -m sage.doctest src/sage/combinat/partition.py
 ```
 
-**7. Push and open the PR.** Title: `Fix NameError in Partitions.cardinality() when passagemath-flint is absent`. Linked to issue #2243 in the commit message.
+**7. Push and open the PR.** Title: `Fix NameError in Partitions.cardinality() when passagemath-flint is absent`. Linked to issue [#2243](https://github.com/passagemath/passagemath/issues/2243) in the commit message.
 
 **8. CI passed.** No failures in files touched.
 

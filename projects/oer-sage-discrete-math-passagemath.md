@@ -1,8 +1,9 @@
 # Adapt `sage-discrete-math` to run on passagemath
 
-_Python + basic XML editing. No Sage or Cython knowledge needed. See issue #2290._
+_Python + basic XML editing. No Sage or Cython knowledge needed. See [issue #2290](https://github.com/passagemath/passagemath/issues/2290)._
 
 **Repo:** https://github.com/SageMathOER-CCC/sage-discrete-math — CC-BY, fork freely
+
 **What it is:** an open discrete math textbook built in [PreTeXt](https://pretextbook.org/) (XML source → HTML + PDF). Code examples are embedded as `<sage>` blocks that render as live cells in the browser.
 
 ```bash
@@ -31,7 +32,7 @@ This is three files. Start here.
 
 **`source/getting-started/ch-getting-started.ptx`** — the intro paragraph says "SageMathCell, CoCalc, and a local installation." Update the framing to match the new instructions above.
 
-**`source/getting-started/sec-intro-to-sage.ptx`** — documents `^` as an exponentiation operator and notes it's a Sage thing. It is — `^` is XOR in Python. Remove that and keep only `**`. (In Python, `^` is bitwise XOR — it won't error, it'll just silently give the wrong answer.)
+**`source/getting-started/sec-intro-to-sage.ptx`** — documents `^` as an exponentiation operator and notes it's a Sage thing. Remove that and keep only `**`. In Python, `^` is bitwise XOR — it won't error, it'll just silently give the wrong answer.
 
 ---
 
@@ -60,7 +61,12 @@ rg 'Set\(' source/ -l        # Sage's Set() — may need imports or stdlib swap
 
 Where you need passagemath, add the import at the top of the cell rather than relying on it being pre-loaded.
 
-**Rational division** — `5 / 3` gives `5/3` (exact fraction) in SageMath because the Sage preparser silently wraps integer literals in `Integer()`. That preparser doesn't run in Colab — passagemath is just a library there — so `5 / 3` returns `1.666...` like normal Python. This is a real behavioral difference. Where the book relies on exact rational output, update the examples to be explicit: `Integer(5) / Integer(3)` or `QQ(5) / QQ(3)`.
+**Rational division** — `5 / 3` gives `5/3` (exact fraction) in SageMath because the Sage preparser silently wraps integer literals in `Integer()`. That preparser doesn't run in Colab — passagemath is just a library there — so `5 / 3` returns `1.666...` like normal Python. This is a real behavioral difference. Where the book relies on exact rational output, update the examples to be explicit: `Integer(5) / Integer(3)` or `QQ(5) / QQ(3)`. Add the imports at the top of the cell:
+
+```python
+from sage.rings.integer import Integer
+from sage.rings.rational_field import QQ
+```
 
 ---
 
@@ -81,7 +87,7 @@ Three options — pick one or check with mkoeppe before starting Part 3:
 ## Checking your work
 
 ```bash
-pretext build html && pretext view html
+pretext build && pretext view
 ```
 
 - New reader can get set up using only Colab — no CoCalc account created

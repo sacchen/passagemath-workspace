@@ -17,7 +17,7 @@ passagemath is a modular, pip-installable fork of SageMath — a 30-year-old mat
 platform. The goal is to run it entirely in the browser via WebAssembly: no server,
 math in a browser tab.
 
-A live demo already exists for the pure-Python subset:
+A live demo already exists for a subset of the packages made available in emscripten-forge:
 http://passagemath.org/passagemath-jupyterlite-demo/
 
 Most of the interesting math (number theory, algebraic geometry, combinatorics) depends
@@ -62,12 +62,8 @@ Common issues to handle:
 - `mmap` with `MAP_ANONYMOUS` — emulation required
 - Filesystem assumptions — replace with Emscripten's virtual FS where needed
 
-Look at existing recipes for patterns. The passagemath fork is the target repo:
-https://github.com/passagemath/downstream-emscripten-forge-recipes
-
-Note: some in-progress work (e.g. NTL PR #4990) is in the upstream
-[emscripten-forge/recipes](https://github.com/emscripten-forge/recipes) repo — that's
-a different project. PRs for passagemath go to the passagemath fork above.
+Look at existing recipes for patterns. The [emscripten-forge/recipes](https://github.com/emscripten-forge/recipes) repo
+is the target repo; mkoeppe submits his recipes through the passagemath fork at https://github.com/passagemath/downstream-emscripten-forge-recipes (instead of a personal fork) for branding purposes.
 
 ---
 
@@ -89,7 +85,7 @@ The repo has CI; a passing run against your recipe PR is the verification.
 - You don't need to understand the math the library implements — just the build system.
 - The emscripten-forge toolchain handles most of the LLVM/wasm32 pipeline; you're
   writing the recipe and fixing the POSIX gaps.
-- Matthias Köppe (mkoeppe) maintains the recipes repo and the passagemath WASM effort.
+- Matthias Köppe (mkoeppe) organizes the passagemath WASM effort.
   One issue per comment; responds fast.
 
 ## Contact

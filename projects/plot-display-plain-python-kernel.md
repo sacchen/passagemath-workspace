@@ -215,12 +215,15 @@ uv run python -m sage.doctest src/sage/plot/multigraphics.py
 - The `isinstance(self, GraphicsArray)` check in `tight_layout()` mirrors what `MultiGraphics.save()` does.
 - `_repr_svg_()` can follow the same refactoring pattern later — out of scope here.
 - Does not affect 3D graphics (`plot3d/`) — separate display system, separate effort.
-- **passagemath-pkg-* repos checked (2026-03-22):** one external package implements
-  `_rich_repr_()`: `passagemath-pkg-slabbe` (`slabbe/tikz_picture.py`, class `TikzPicture`).
-  It renders via LaTeX (not matplotlib) and is more restricted than `Graphics` — it
-  explicitly checks for `BackendIPythonNotebook`, so it also won't display in plain Python
-  kernels. Adding `_repr_png_()` there requires a LaTeX toolchain; separate concern for
-  that package, out of scope here.
+- **passagemath-pkg-* repos checked (2026-03-22):** two external packages implement
+  `_rich_repr_()`. Neither is in scope for this PR:
+  - `passagemath-pkg-slabbe` (`slabbe/tikz_picture.py`, `TikzPicture`): renders via LaTeX,
+    explicitly checks for `BackendIPythonNotebook` — separate LaTeX toolchain concern.
+  - `passagemath-pkg-flexrilog` (`NAC_coloring.py`, `graph_motion.py`): `NAC_coloring`
+    delegates to `self.plot()._rich_repr_()` and would need its own `_repr_png_()` calling
+    `self.plot()._repr_png_()`; `graph_motion` only returns text (SVG path commented out).
+  Note: `gh search code` did not index flexrilog — it is not a reliable tool for exhaustive
+  org-wide audits.
 
 ## Contact
 

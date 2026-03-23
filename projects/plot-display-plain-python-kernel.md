@@ -185,8 +185,8 @@ uv venv .venv && uv pip install -e pkgs/sagemath-plot
 Manual smoke test (no Sage kernel needed):
 
 ```python
-from sage.plot.plot import line
-from sage.plot.plot import graphics_array
+from sage.plot.line import line
+from sage.plot.multigraphics import graphics_array
 from sage.plot.circle import circle
 
 G = line([(0, 0), (1, 1)])
@@ -203,8 +203,8 @@ print(f"MultiGraphics OK — {len(png2)} bytes")
 Run doctests:
 
 ```bash
-python -m sage.doctest src/sage/plot/graphics.py
-python -m sage.doctest src/sage/plot/multigraphics.py
+uv run python -m sage.doctest src/sage/plot/graphics.py
+uv run python -m sage.doctest src/sage/plot/multigraphics.py
 ```
 
 ## Notes
@@ -224,4 +224,3 @@ python -m sage.doctest src/sage/plot/multigraphics.py
 
 File a PR against [passagemath/passagemath](https://github.com/passagemath/passagemath).
 Reference issue #2236 in the commit message.
-mkoeppe reviews fast — one issue per comment, expects short replies.

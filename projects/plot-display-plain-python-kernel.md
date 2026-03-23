@@ -3,7 +3,7 @@
 **For:** A Python developer comfortable with Jupyter internals — IPython display
 protocol, `_repr_*` methods, how notebooks decide what to show.
 
-**Effort:** Half a day. Two files, ~15 lines each.
+**Effort:** Half a day. Two files, ~30 lines each.
 
 **Issue:** https://github.com/passagemath/passagemath/issues/2236
 
@@ -40,11 +40,20 @@ formatter (which would call `_repr_png_()`) is ever reached.
 
 ## The fix
 
-Add `_repr_png_()` to `Graphics` and `MultiGraphics`. Each method calls
-`self.matplotlib()` (already exists, returns a `matplotlib.figure.Figure`),
-saves to an in-memory buffer, and returns PNG bytes.
+**Refactor `_rich_repr_()` to go through `_repr_png_()`** — not a standalone addition.
+mkoeppe's direction: `_repr_png_()` becomes the canonical PNG implementation;
+`_rich_repr_()` calls it for the PNG case. One implementation, two protocols.
 
-**`src/sage/plot/graphics.py`** — add after `_rich_repr_()`:
+Two files to touch: `src/sage/plot/graphics.py` (`Graphics`) and
+`src/sage/plot/multigraphics.py` (`MultiGraphics`). Same changes in each.
+
+### Step 1: Add `_repr_png_()` (insert after `_rich_repr_()` in each class)
+
+The implementation replicates the PNG path from `save()` using `BytesIO` instead of
+a temp file. Match `save()` closely: merge options the same way, back up rcParams,
+set `FigureCanvasAgg`, call `tight_layout()`, restore rcParams in a `finally` block.
+
+**`src/sage/plot/graphics.py`** — `Graphics._repr_png_()`:
 
 ```python
 def _repr_png_(self):
@@ -65,18 +74,39 @@ def _repr_png_(self):
         True
     """
     from io import BytesIO
-    buf = BytesIO()
+    from matplotlib import rcParams
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    options = {}
+    options.update(self.SHOW_OPTIONS)
+    options.update(self._extra_kwds)
+    dpi = options.pop('dpi')
+    transparent = options.pop('transparent')
+    fig_tight = options.pop('fig_tight')
+    rc_backup = (rcParams['ps.useafm'], rcParams['pdf.use14corefonts'],
+                 rcParams['text.usetex'])
     try:
-        fig = self.matplotlib(**self._extra_kwds)
-        fig.savefig(buf, format='png', bbox_inches='tight')
-        import matplotlib.pyplot as plt
-        plt.close(fig)
+        figure = self.matplotlib(**options)
+        figure.set_canvas(FigureCanvasAgg(figure))
+        figure.tight_layout()
+        opts = {'dpi': dpi, 'transparent': transparent}
+        if fig_tight:
+            opts['bbox_inches'] = 'tight'
+        if self._bbox_extra_artists:
+            opts['bbox_extra_artists'] = self._bbox_extra_artists
+        buf = BytesIO()
+        figure.savefig(buf, format='png', **opts)
+        return buf.getvalue()
     except Exception:
         return None
-    return buf.getvalue()
+    finally:
+        (rcParams['ps.useafm'], rcParams['pdf.use14corefonts'],
+         rcParams['text.usetex']) = rc_backup
 ```
 
-**`src/sage/plot/multigraphics.py`** — add after `_rich_repr_()`:
+**`src/sage/plot/multigraphics.py`** — `MultiGraphics._repr_png_()`:
+
+`MultiGraphics.save()` reads `dpi/transparent/fig_tight` from `Graphics.SHOW_OPTIONS`
+(not `self._extra_kwds`) and calls `self.matplotlib()` with no extra kwargs — match that:
 
 ```python
 def _repr_png_(self):
@@ -96,57 +126,102 @@ def _repr_png_(self):
         True
     """
     from io import BytesIO
-    buf = BytesIO()
+    from matplotlib import rcParams
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    dpi = Graphics.SHOW_OPTIONS['dpi']
+    transparent = Graphics.SHOW_OPTIONS['transparent']
+    fig_tight = Graphics.SHOW_OPTIONS['fig_tight']
+    rc_backup = (rcParams['ps.useafm'], rcParams['pdf.use14corefonts'],
+                 rcParams['text.usetex'])
     try:
-        fig = self.matplotlib()
-        fig.savefig(buf, format='png', bbox_inches='tight')
-        import matplotlib.pyplot as plt
-        plt.close(fig)
+        figure = self.matplotlib()
+        figure.set_canvas(FigureCanvasAgg(figure))
+        if isinstance(self, GraphicsArray):
+            figure.tight_layout()
+        opts = {'dpi': dpi, 'transparent': transparent}
+        if fig_tight:
+            opts['bbox_inches'] = 'tight'
+        buf = BytesIO()
+        figure.savefig(buf, format='png', **opts)
+        return buf.getvalue()
     except Exception:
         return None
-    return buf.getvalue()
+    finally:
+        (rcParams['ps.useafm'], rcParams['pdf.use14corefonts'],
+         rcParams['text.usetex']) = rc_backup
 ```
+
+### Step 2: Refactor `_rich_repr_()` in each class to call `_repr_png_()`
+
+The loop currently calls `graphics_from_save` for every format. Change it so the `.png`
+case goes through `_repr_png_()` instead. `OutputBuffer` accepts bytes directly — no
+temp file needed.
+
+Replace the loop body in **both** `Graphics._rich_repr_()` (graphics.py:1009) and
+`MultiGraphics._rich_repr_()` (multigraphics.py:208):
+
+```python
+for file_ext, output_container in preferred:
+    if output_container in display_manager.supported_output():
+        if file_ext == '.png':
+            png_data = self._repr_png_()
+            if png_data is not None:
+                from sage.repl.rich_output.buffer import OutputBuffer
+                return output_container(OutputBuffer(png_data))
+        else:
+            return display_manager.graphics_from_save(
+                self.save, kwds, file_ext, output_container)
+```
+
+Non-PNG formats (SVG, PDF, JPG) are unchanged — they still go through `graphics_from_save`.
 
 ## Verify
 
-Install the package and test the method directly:
-
 ```bash
-uv venv .venv
-source .venv/bin/activate
-uv pip install passagemath-plot
+cd passagemath   # monorepo root
+uv venv .venv && uv pip install -e pkgs/sagemath-plot
 ```
+
+Manual smoke test (no Sage kernel needed):
 
 ```python
-from sage.plot.line import line
+from sage.plot.plot import line
+from sage.plot.plot import graphics_array
+from sage.plot.circle import circle
+
 G = line([(0, 0), (1, 1)])
 png = G._repr_png_()
-assert png is not None
-assert png[:8] == b'\x89PNG\r\n\x1a\n'
-print(f"OK — {len(png)} bytes")
+assert png is not None and png[:8] == b'\x89PNG\r\n\x1a\n'
+print(f"Graphics OK — {len(png)} bytes")
+
+GA = graphics_array([line([(0,0),(1,1)]), circle((0,0),1)])
+png2 = GA._repr_png_()
+assert png2 is not None and png2[:8] == b'\x89PNG\r\n\x1a\n'
+print(f"MultiGraphics OK — {len(png2)} bytes")
 ```
 
-To run the doctests, you need the monorepo checked out locally (the installed package
-doesn't include the source tree):
+Run doctests:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/passagemath
-cd passagemath
 python -m sage.doctest src/sage/plot/graphics.py
 python -m sage.doctest src/sage/plot/multigraphics.py
 ```
 
 ## Notes
 
-- `_extra_kwds` — dict of display options (`figsize`, `aspect_ratio`, etc.) stored
-  on the `Graphics` object. All keys are accepted by `matplotlib()`.
-- `MultiGraphics.matplotlib()` takes no positional args — call with no arguments.
-- `plt.close(fig)` prevents memory leaks in long-running kernels.
-- The `try/except` ensures graceful fallback to text if rendering fails (headless CI).
-- Does not affect 3D graphics (`plot3d/`) — separate display system.
+- `Graphics._rich_repr_()` is at line 976; `MultiGraphics._rich_repr_()` is at line 170.
+- `MultiGraphics.matplotlib()` exists (line 269) and takes `(figure=None, figsize=None, **kwds)`. Call with no args.
+- `MultiGraphics` has no `_bbox_extra_artists` — omit that guard in its `_repr_png_()`.
+- The `isinstance(self, GraphicsArray)` check in `tight_layout()` mirrors what `MultiGraphics.save()` does.
+- `_repr_svg_()` can follow the same refactoring pattern later — out of scope here.
+- Does not affect 3D graphics (`plot3d/`) — separate display system, separate effort.
+- **passagemath-pkg-* repos checked (2026-03-22):** none of the 12 external packages
+  (numerical-interactive-mip, RKkit, SnapPy, sboxanalyzer, RSArmageddon, grobnercrystals,
+  InDelsTopo, eigenmorphic, msinvar, acsv, cluster-pictures, ore_algebra) implement
+  `_rich_repr_()`. No further action needed there.
 
 ## Contact
 
 File a PR against [passagemath/passagemath](https://github.com/passagemath/passagemath).
 Reference issue #2236 in the commit message.
-Matthias Köppe (mkoeppe) reviews fast — one issue per comment, expects short replies.
+mkoeppe reviews fast — one issue per comment, expects short replies.

@@ -141,6 +141,14 @@ uv run python -m sage.doctest src/sage/combinat/partition.py
 
 **9. Review.** mkoeppe reviewed and merged the same day. This was a clean case — review is often a process with back-and-forth, and a few days between rounds is normal.
 
+## Exercises
+
+If you want hands-on practice with the patterns behind real PRs before picking up an issue:
+
+- **[exercises/importerror-fix-pattern.ipynb](exercises/importerror-fix-pattern.ipynb)** — the `except ImportError: pass` antipattern: why it's a bug in modular installs, how to trace it, and the `FeatureNotPresentError` fix. Uses the code from PR #2253 and issue #2243, including the intermittent masking that made the bug hard to reproduce.
+
+Setup: see [exercises/README.md](exercises/README.md).
+
 ## When stuck
 
 GitHub issue comments work well — the answer stays visible for others.

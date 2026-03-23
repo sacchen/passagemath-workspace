@@ -215,10 +215,12 @@ uv run python -m sage.doctest src/sage/plot/multigraphics.py
 - The `isinstance(self, GraphicsArray)` check in `tight_layout()` mirrors what `MultiGraphics.save()` does.
 - `_repr_svg_()` can follow the same refactoring pattern later — out of scope here.
 - Does not affect 3D graphics (`plot3d/`) — separate display system, separate effort.
-- **passagemath-pkg-* repos checked (2026-03-22):** none of the 12 external packages
-  (numerical-interactive-mip, RKkit, SnapPy, sboxanalyzer, RSArmageddon, grobnercrystals,
-  InDelsTopo, eigenmorphic, msinvar, acsv, cluster-pictures, ore_algebra) implement
-  `_rich_repr_()`. No further action needed there.
+- **passagemath-pkg-* repos checked (2026-03-22):** one external package implements
+  `_rich_repr_()`: `passagemath-pkg-slabbe` (`slabbe/tikz_picture.py`, class `TikzPicture`).
+  It renders via LaTeX (not matplotlib) and is more restricted than `Graphics` — it
+  explicitly checks for `BackendIPythonNotebook`, so it also won't display in plain Python
+  kernels. Adding `_repr_png_()` there requires a LaTeX toolchain; separate concern for
+  that package, out of scope here.
 
 ## Contact
 

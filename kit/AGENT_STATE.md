@@ -1,77 +1,56 @@
-# passagemath — Agent State
+# Agent State — 2026-03-24
 
-Current work queue and findings. Update this file as tasks are completed or
-new candidates are discovered.
+## Active PRs (waiting on CI / review)
 
----
+| PR | Title | Status |
+|----|-------|--------|
+| #2292 | docs, tox: document check_unbound_imports | Open |
+| #2293 | polynomial_quotient_ring: # needs sage.modules on string-conversion doctests | Open |
 
-## Current strategy (2026-03-16)
+## Multiplier infrastructure (complete)
 
-**Phase:** multiplier. Current focus is making work available for others —
-scoping shovel-ready issues with root cause, exact files, and verification
-method. Direct technical contributions are reactive.
+All pre-term multiplier work is done:
 
-**Upcoming:** Matthias's optimization course starts 2026-03-30. Primary
-deliverable: computational notebooks built alongside the course.
-Secondary: deborgen (distributed compute cooperative) as applied LP/scheduling
-test case.
+- **Onboarding doc** — `passagemath-workspace/onboarding.md` — live at https://github.com/sacchen/passagemath-workspace/blob/main/onboarding.md
+- **Project specs** — `passagemath-workspace/projects/` — plot display, weighted adjacency matrix, WASM recipe, OER adaptation
+- **Shovel-ready queue** — fully posted at https://github.com/passagemath/passagemath/issues/2269#issuecomment-4070368357
+  - #2236 (plot `_repr_png_()`) — intermediate
+  - #2108 (`weighted_adjacency_matrix` crash) — intermediate
+  - #2284 (WASM recipe) — advanced
+  - #2290 (sage-discrete-math OER) — beginner
 
-**Open PRs to watch:** #2282 and #2283. Don't open new PRs until those land.
+## Team members (introduced in #2269)
 
----
+- **QihanQG** — CS/Math major
+- **Runze2026** (Tony) — Math + CS minor
 
-## Active queue
+## What's next
 
-Nothing currently in flight. Next technical work is reactive — CI regressions,
-issues filed by the maintainer, or course-adjacent bugs.
+- Wait for CI on #2292, #2293; respond to any mkoeppe review
+- Optimization course starts 2026-03-30 — notebook work begins then
+- Issue #2291 (mkoeppe's polyhedral geometry meta-issue) — long task list, skim for course-adjacent items
 
----
+## Recent session summary (2026-03-24)
 
-## Completed
+- Created `exercises/ci-failure-discovery/` notebook (notebook 3): teaches how to find real failures in noisy CI logs, why test-mod fails when local passes, and how to trace NameError back to missing guard
+- Resolved git rebase conflict when remote restructured exercises into per-subdirectory format
+- Ported kit/claude-memories/ into new memory system at ~/.claude/projects/.../memory/
 
-### A — partition.py NameError → PR #2253 (Merged)
+## Previous session summary (2026-03-22)
 
-* **PR:** https://github.com/passagemath/passagemath/pull/2253
-* `cached_number_of_partitions` now bound to `None` on ImportError.
+- Confirmed all multiplier work is done: onboarding doc live, project specs in workspace, shovel-ready queue posted on GitHub
+- Updated CLAUDE.md to reference AGENTS.md with full absolute path
+- Updated AGENTS.md with workspace repo location and full shovel-ready queue details
 
-### B — Meta-issue #2254 (Closed, PRs filed)
+## Session summary (2026-03-21)
 
-* **Issue:** https://github.com/passagemath/passagemath/issues/2254
-* Full triage of ~45 scanner hits posted.
-* **PR #2282:** ell_point.py + number_field.py pari NameError
-* **PR #2283:** padic_extension_leaves.py, multi_polynomial_ideal.py,
-  chart_func.py, tools/check_unbound_imports.py
+Shipped two PRs after #2283 merged:
+- **#2292**: documented `tools/check_unbound_imports.py` in `tools.rst` + added tox env
+- **#2293**: fixed `polynomial_quotient_ring.py` — 3 string-conversion doctests in `_element_constructor_` needed `# needs sage.modules`
 
-### C — Shovel-ready issues (Filed 2026-03-16)
+Investigated #2288 (cellular_basis): math correctness bug, not our wheelhouse. Posted raw log facts without diagnosis.
 
-* **#2236** comment: full `_repr_png_()` implementation spec for Graphics
-* **#2284**: WASM recipe contribution guide
+## Workspace repo note
 
-### D — Onboarding and workspace infrastructure (Done 2026-03-16)
-
-* `passagemath-workspace/onboarding.md` — install, doctests, PR workflow,
-  Perfect Commit
-* `passagemath-workspace/approach.md` — contributing philosophy
-* `passagemath-workspace/projects/` — shovel-ready project cards
-
----
-
-## Discovery scan findings (lower priority, unverified)
-
-### E — `polynomial_element_generic.py` implicit deps (Neglected)
-* **File:** `src/sage/rings/polynomial/polynomial_element_generic.py` line 1631
-* Silent `except ImportError: pass`, no default set for names used in file.
-* **Action:** audit for runtime failures; may overlap with #2254 scope.
-
-### F — `pkg_resources` in kernel warning filters (Scale)
-* **File:** `src/sage/repl/ipython_kernel/kernel.py` line 27
-* References to `pkg_resources` in warning filters.
-* **Action:** modernize to `importlib.metadata` or remove.
-
-### G — Hardcoded `SAGE_ROOT` in sage-conf_conda (Tractable)
-* **File:** `pkgs/sage-conf_conda/setup.py` line 23
-* **Action:** generalize to standard env var discovery.
-
-### H — `.m4` vs generated `pyproject.toml` drift (Scale)
-* **Path:** `pkgs/*/pyproject.toml.m4` (113 packages)
-* **Action:** audit for stale metadata or missing dependencies.
+`passagemath-workspace` is at `/Users/goddess/foundry/sandbox/passagemath-workspace/`.
+Use `kit/AGENT_STATE.md` as the authoritative current-state file.

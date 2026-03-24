@@ -88,6 +88,24 @@ The success condition should be specific: "once your cell raises X instead of Y,
 
 ---
 
+## Evaluating educational value before building
+
+Before building an exercise, ask: does understanding this pattern let the reader do something they couldn't do before — independently, in code they haven't seen?
+
+The ImportError pattern passes this test. It teaches something about Python itself — name binding, what `pass` actually does to scope — that transfers to any project. After the exercise, you can find new instances with the AST checker and fix them without guidance.
+
+The `# needs sage.X` guard pattern doesn't pass it. The lesson is a single rule: guard every line that uses a name bound under a dep. Once you've seen the trap, you know the rule. There's no concept underneath it to reason about, and you only encounter it reactively (when CI fails). It's a convention, not a pattern.
+
+The distinction:
+- **Concept** — something about how Python or the system works. Generalizes. Worth an exercise.
+- **Convention** — a project-specific rule. Doesn't generalize. Worth a short reference doc, not an exercise.
+
+A good topic also gives the reader agency: they can go find more instances and fix them. If the skill is only useful when CI hands you a specific failure, the exercise isn't opening a door — it's just explaining a sign on a door you may never reach.
+
+When in doubt: if you can fully convey the lesson in a page of prose, it's a reference doc. An exercise earns its length by requiring the reader to reason, not just recognize.
+
+---
+
 ## pyproject.toml
 
 Each exercise folder gets its own `pyproject.toml` with the minimal deps needed. `uv sync` + kernel registration should be the entire setup. Don't pull in more than needed — it slows install and obscures what the notebook actually depends on.

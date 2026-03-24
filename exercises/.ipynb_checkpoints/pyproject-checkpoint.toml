@@ -1,9 +1,0 @@
-[project]
-name = "passagemath-exercises"
-version = "0.1.0"
-requires-python = ">=3.11"
-dependencies = [
-    "passagemath-combinat",
-    "ipykernel",
-    "jupyterlab>=4.5.6",
-]

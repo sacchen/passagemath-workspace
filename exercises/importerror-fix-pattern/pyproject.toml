@@ -1,0 +1,9 @@
+[project]
+name = "passagemath-exercise-importerror-fix-pattern"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "passagemath-combinat",
+    "ipykernel",
+    "jupyterlab>=4.5.6",
+]

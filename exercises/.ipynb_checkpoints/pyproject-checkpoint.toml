@@ -5,4 +5,5 @@ requires-python = ">=3.11"
 dependencies = [
     "passagemath-combinat",
     "ipykernel",
+    "jupyterlab>=4.5.6",
 ]

@@ -104,6 +104,16 @@ A good topic also gives the reader agency: they can go find more instances and f
 
 When in doubt: if you can fully convey the lesson in a page of prose, it's a reference doc. An exercise earns its length by requiring the reader to reason, not just recognize.
 
+### Postmortem: `ci-failure-discovery`
+
+`ci-failure-discovery.ipynb` was built before the concept/convention distinction was fully articulated. The notebook went through a full structural rewrite before the question "should this be a notebook at all?" was asked. By then the sunk cost made it easier to add a design note and keep it than to delete it.
+
+What went wrong: the topic was picked because it was recent and concrete (a real CI failure, a real PR), not because it taught a transferable skill. Those are different criteria. "Recent and concrete" produces good examples for reference docs. "Transferable skill" is the bar for an exercise.
+
+The check that was missing: after identifying the topic, ask "after doing this exercise, what can the reader go do that they couldn't before?" For `ci-failure-discovery` the honest answer is "recognize this specific failure mode when CI hands it to them." That's recognition, not skill. The importerror exercise answer is "run the AST checker on any module and fix what it finds." That's agency.
+
+The notebook exists and has a design note at the top. Don't build more like it.
+
 ---
 
 ## pyproject.toml

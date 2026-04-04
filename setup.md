@@ -59,10 +59,6 @@ git config --global user.email "you@example.com"
 
 Use the same email as your GitHub account.
 
-### Authentication
-
-When you push code to GitHub, it needs to verify it's you. SSH is the most common approach once set up: [GitHub's SSH guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh). If you'd rather not deal with SSH keys right now, use HTTPS with a personal access token (PAT): GitHub → Settings → Developer settings → Personal access tokens → generate one with "repo" scope, and paste it as your password when git prompts you.
-
 ### Two repos
 
 - **[passagemath/passagemath](https://github.com/passagemath/passagemath)** — the source code. This is what you fork and edit.
@@ -70,21 +66,17 @@ When you push code to GitHub, it needs to verify it's you. SSH is the most commo
 
 ### Cloning and opening
 
-Fork `passagemath/passagemath` on GitHub, then clone your fork:
+Fork `passagemath/passagemath` on GitHub, then clone it via VSCode — this handles authentication automatically through a browser sign-in, no SSH keys or tokens needed.
 
-```bash
-git clone https://github.com/YOUR_USERNAME/passagemath.git   # HTTPS
-# or
-git clone git@github.com:YOUR_USERNAME/passagemath.git        # SSH
-```
-
-Open the folder in VSCode: **File → Add Folder to Workspace** → navigate to where you cloned it (should work on Mac and Windows). Then open a real file to confirm everything looks right — in the Explorer panel on the left, find:
+Open the Command Palette with Cmd+Shift+P (Mac) or Ctrl+Shift+P (Windows), type **Git: Clone**, and paste your fork's URL:
 
 ```
-src/sage/plot/graphics.py
+https://github.com/YOUR_USERNAME/passagemath.git
 ```
 
-You should see Python code. If VSCode prompts you to install the Python extension, do it.
+VSCode will open a browser window to sign in to GitHub. After that it'll download the repo and ask if you want to open it. Say yes.
+
+To confirm it worked, open `src/sage/plot/graphics.py` in the Explorer panel on the left — you should see Python code. If VSCode prompts you to install the Python extension, do it.
 
 To check your remotes:
 

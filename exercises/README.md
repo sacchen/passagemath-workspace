@@ -9,11 +9,8 @@ Each exercise has its own directory and `pyproject.toml`. To set up an exercise:
 ```bash
 cd exercises/<exercise-name>
 uv sync
-uv run python -m ipykernel install --user --name passagemath-<exercise-name> --display-name "passagemath (<exercise-name>)"
-uv run jupyter notebook
+uv run jupyter lab
 ```
-
-Select the matching kernel when opening the notebook.
 
 ## Notebooks
 

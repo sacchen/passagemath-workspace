@@ -1,5 +1,7 @@
 # Contributing to passagemath
 
+> New to terminals, git, or Python environments? Start with [setup.md](setup.md) first.
+
 ## What is this
 
 [SageMath](https://www.sagemath.org/) is a 30-year-old open-source math platform — a unified interface to hundreds of math libraries (PARI, FLINT, GAP, Singular, ...) plus a large Python library covering combinatorics, number theory, geometry, algebra, and more. It has always been installed as one giant monolithic package.

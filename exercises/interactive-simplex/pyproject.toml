@@ -1,0 +1,12 @@
+[project]
+name = "passagemath-exercise-interactive-simplex"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "passagemath-polyhedra",
+    "passagemath-plot",
+    "passagemath-symbolics",
+    "passagemath-repl",
+    "ipykernel",
+    "jupyterlab>=4.5.6",
+]

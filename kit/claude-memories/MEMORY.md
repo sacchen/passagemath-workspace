@@ -16,22 +16,24 @@ mkoeppe invited @sacchen to the passagemath GitHub org and research team (issue 
 
 ## Active PRs / issues
 
-- **PR #2283** — MERGED 2026-03-21.
-- **PR #2292** — Open. docs + tox env for `check_unbound_imports` (mkoeppe's post-merge request from #2283).
-- **PR #2293** — Open. `polynomial_quotient_ring._element_constructor_` string-conversion doctests need `# needs sage.modules`; root cause PR #2057 + #2069.
-- **Issue #2254** — open, complete triage comment posted. All ~45 scanner hits classified. No remaining actionable bugs beyond #2283.
-- **Issue #2256** — filed (two doctest regressions in test-mod CI), no PR planned.
-- **Issue #2269** — research team onboarding issue. Shovel-ready queue fully posted at https://github.com/passagemath/passagemath/issues/2269#issuecomment-4070368357 — covers #2236, #2108, #2284, #2290 with full specs. New team members: QihanQG, Runze2026.
-- **Issue #2290** — OER adaptation. Spec written for sage-discrete-math (CC-BY, PreTeXt). Linked from #2269 shovel-ready comment.
-- **Issue #2291** — mkoeppe's polyhedral geometry meta-issue. Just a long task list, not a strategic signal.
+No open PRs (as of 2026-04-08). Open issues:
+
+- **Issue #2254** — complete triage comment posted. All ~45 scanner hits classified. No remaining actionable bugs.
+- **Issue #2269** — research team onboarding. Shovel-ready queue posted at https://github.com/passagemath/passagemath/issues/2269#issuecomment-4070368357 — covers #2236, #2108, #2284, #2290 with full specs.
 
 ## Completed work (details in project_completed_prs.md)
 
-- PR #6 (exception types, external mip package): MERGED
-- PR #2237 (importlib.metadata in configure): MERGED, Upstream candidate, in 10.8.2.rc2
-- Issue #2239 (PIP_FIND_LINKS Windows): acted on by Matthias in 35 min, credited by name
-- PR #2253 (Partitions.cardinality without flint): MERGED, "Looking great, thanks a lot."
+- PR #2354 (linbox `# needs` guards in modsym and geometry/cone): MERGED 2026-04-08
+- PR #2353 (LP docs: dual values, matrix patterns, `simplex_or_intopt`/`get_row_dual`): MERGED 2026-04-08
+- PR #2293 (polynomial_quotient_ring: `# needs sage.modules` on string-conversion doctests): MERGED 2026-03-23
+- PR #2292 (docs + tox env for `check_unbound_imports`): MERGED 2026-04-04
+- PR #2287 (calculus_method: fix pickling regression from lazy_import sympy_latex): MERGED
+- PR #2283 (unbound imports fix + `check_unbound_imports` AST tool): MERGED 2026-03-21
 - PR #2282 (pari NameError → FeatureNotPresentError): MERGED 2026-03-16
+- PR #2253 (Partitions.cardinality without flint): MERGED
+- PR #2237 (importlib.metadata in configure): MERGED, in 10.8.2.rc2
+- Issue #2239 (PIP_FIND_LINKS Windows): acted on by mkoeppe in 35 min, credited by name
+- PR #6 (exception types, external mip package): MERGED
 - Issue #2244 (Marimo backend): RESOLVED by PR #2255 (merged 2026-03-08)
 
 ## Repo architecture
@@ -42,13 +44,12 @@ mkoeppe invited @sacchen to the passagemath GitHub org and research team (issue 
 
 ## Environment
 
-- Repos at `~/foundry/sandbox/passagemath/`: `passagemath/` (shallow blobless clone), `sage-numerical-interactive-mip/` (full clone)
-- **passagemath-workspace** at `~/foundry/sandbox/passagemath-workspace/` — public contributor resource repo (github.com/sacchen/passagemath-workspace). Onboarding doc at `onboarding.md`, project specs at `projects/`, nerdsnipe at `nerdsnipe/`. Agent context: `kit/AGENTS.md`, state: `kit/AGENT_STATE.md`. mkoeppe forked it and reads it seriously.
-- `.venv` (Python 3.12): passagemath-polyhedra + glpk + passagemath-graphs
-- `.venv311` (Python 3.11): passagemath-polyhedra + glpk; can import `MixedIntegerLinearProgram`
-- `.venv-explore` (Python 3.12): passagemath-combinat, passagemath-plot, ipykernel; registered as "passagemath" Jupyter kernel
-- No `sage -t`; doctests run via `python -m sage.doctest`
-- Jupyter at `~/foundry/sandbox/jupyter-sandbox/`
+- Clone `passagemath/passagemath` (shallow blobless is sufficient).
+- **passagemath-workspace** — public contributor resource repo (github.com/sacchen/passagemath-workspace). Agent context: `kit/AGENTS.md`, state: `kit/AGENT_STATE.md`. mkoeppe forked it and reads it seriously.
+- uv venvs (create as needed — see `kit/AGENTS.md` for full layout):
+  - `.venv-contrib` (Python 3.12): contribution testing — passagemath-repl, combinat, plot, polyhedra, glpk
+  - `.venv311` (Python 3.11): polyhedra + glpk; can import `MixedIntegerLinearProgram`
+- No `sage -t`; doctests run via `python -m sage.doctest --environment sage.all__sagemath_<package>`
 
 ## FeatureNotPresentError pattern (Matthias-endorsed)
 
@@ -67,8 +68,8 @@ if x_func is None:
 ## Workflow notes
 
 - **PR attribution:** `gh pr view <N> --repo passagemath/passagemath --json files --jq '[.files[].path]'`
-- **Baseline format:** `known-test-failures.json` `{'ntests': N}` = total tests run, not failure count. Say "new failures beyond baseline."
-- **CI log extraction:** `gh api "repos/.../actions/jobs/{JOB_ID}/logs" -H "Accept: application/vnd.github.v3.raw"` — filter Docker internal IP noise. Grep `New failures, not in baseline` then `-A 30`.
+- **Baseline format:** `known-test-failures.json` `{'ntests': N}` = total tests run, not failure count. Say "new failures beyond baseline." Do NOT edit `known-test-failures.json` yourself. If numerical drift appears in your PR's CI: flag it in the PR description as pre-existing. If mkoeppe confirms it's a separate issue, open one — do not fold it into your current PR.
+- **CI log extraction:** `gh api "repos/.../actions/jobs/{JOB_ID}/logs" -H "Accept: application/vnd.github.v3.raw"` — filter Docker internal IP noise. Grep `New failures, not in baseline` then `-A 30`. Be aware of **Log Clutter**: logs are flooded with "Warning: The tag '# needs X' may no longer be needed", which will hijack simple greps for package names.
 - **GitHub formatting:** backticks must be literal in `gh` input — do NOT escape as `\``. Each paragraph must be one unbroken line — single newlines render as `<br>`. See [feedback_github_formatting.md](feedback_github_formatting.md).
 - **Gemini:** good for log forensics and codebase-wide AST analysis. Has made architectural errors — always verify against actual code before filing.
 - **mkoeppe review style:** fast, one issue per comment, points at exact log line. Respond in kind.

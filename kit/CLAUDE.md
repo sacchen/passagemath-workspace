@@ -1,6 +1,6 @@
 # Project directives
 
-> Full agent context is in `AGENTS.md` (`/Users/goddess/foundry/sandbox/passagemath/AGENTS.md`) — read it at the start of any session.
+> Full agent context is in `AGENTS.md` (this directory) — read it at the start of any session.
 
 ## Search tooling
 

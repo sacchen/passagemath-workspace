@@ -55,6 +55,14 @@ Use this lens when evaluating candidates for contribution:
 * **Tractable** — surgical fixes in `src/sage/` with clear scope, testable
   in the local venv, low risk of reviewer pushback.
 
+### Interpreting CI Noise (The "Triage Tax")
+
+When reviewing failed CI runs (especially `test-mod` jobs), distinguish between three types of noise:
+
+1. **Modularity Gaps (High Value):** A partial install lacks an optional dependency (e.g., `linbox`), but a test hits a code path requiring it, raising `ModuleNotFoundError`. These are "asymmetric dependencies." **Fix:** Add a surgical `# needs sage.libs.X` guard to the `sage:` line initiating the test.
+2. **Baseline Drift (Do Not Touch):** Numerical drift or library updates causing output mismatches (e.g., `Got: 99` vs `Expected: 100`), flagged as "New failures" because `known-test-failures.json` is out of sync. **Do NOT edit the baseline JSON yourself.** If it appears in your PR's CI: mention it in the PR description and note it's pre-existing. If mkoeppe confirms it's a separate issue, open one — do not fold it into your current PR.
+3. **Log Clutter (Ignore):** Logs are flooded with `Warning: The tag '# needs X' may no longer be needed`. These are false positives — do not mistake them for actual missing dependencies when grepping logs via `gh api`.
+
 ---
 
 ## Working principles
@@ -106,26 +114,18 @@ Use this lens when evaluating candidates for contribution:
 
 ## Local environment
 
-* Cloned repos at `/Users/goddess/foundry/sandbox/passagemath/`
-  * `passagemath/` — shallow blobless clone of monorepo
-  * `sage-numerical-interactive-mip/` — full clone, working tree with fix
-    committed
+* Clone `passagemath/passagemath` — shallow blobless clone is sufficient for most contribution work.
 
-* uv venvs:
+* uv venvs (create as needed):
   * `.venv-contrib` (Python 3.12) — **contribution testing venv**:
     passagemath-repl, passagemath-combinat, passagemath-plot,
     passagemath-polyhedra, passagemath-glpk. Use this for doctests.
   * `.venv` (Python 3.12) — passagemath-polyhedra + glpk
   * `.venv311` (Python 3.11) — passagemath-polyhedra + glpk
   * `.venv-explore` (Python 3.12) — passagemath-combinat, passagemath-plot,
-    ipykernel; used for exploratory testing
+    ipykernel; register as a Jupyter kernel for notebook work
 
-* `from sage.numerical.mip import MixedIntegerLinearProgram` works in
-  `.venv311`
-* Cannot run `sage -t` (no full sage CLI)
-* Test runner for mip package: `tox -e passagemath`
-* Jupyter at `/Users/goddess/foundry/sandbox/jupyter-sandbox/` (Python 3.13);
-  `.venv-explore` registered as kernel "passagemath"
+* Cannot run `sage -t` (no full sage CLI in modular installs)
 
 ### Running doctests
 

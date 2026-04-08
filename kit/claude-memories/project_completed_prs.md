@@ -48,3 +48,43 @@ Replaced `pkg_resources.require()` (removed in setuptools 82) with `importlib.me
 
 1. `automatic_semigroup.py`: PR #2161 added unguarded `S5.rename()` at lines 417 and 524 — need `# needs sage.groups`.
 2. `lazy_attribute.pyx`: PR #2148 shifted `banner()` from line 95 to 96 — hardcoded line number in doctest.
+
+## PR #2283 — unbound imports + check_unbound_imports tool (MERGED 2026-03-21)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2283
+
+- `padic_extension_leaves.py`: unbound NTL/FLINT names → FeatureNotPresentError pattern
+- `multi_polynomial_ideal.py`: unbound Singular names → same pattern
+- `chart_func.py`: removed dead try/except around sympy import (sympy always present in symbolics package)
+- `tools/check_unbound_imports.py`: new AST checker that detects the `except ImportError: pass` antipattern leaving names unbound. Documented in `tools.rst`; tox env added in PR #2292.
+
+## PR #2287 — calculus_method pickling regression (MERGED)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2287
+
+- `calculus_method.py`: `lazy_import('sympy', 'latex', as_name='sympy_latex')` introduced a pickling regression — `sympy_latex` became unpicklable. Fix: moved lazy_import line to preserve import order; local import in `_SR_to_Sympy` instead.
+
+## PR #2292 — docs + tox for check_unbound_imports (MERGED 2026-04-04)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2292
+
+- `tools.rst`: documented `check_unbound_imports.py` usage and rationale
+- `tox.ini`: added `check-unbound-imports` env + top-level delegating env. mkoeppe requested this post-merge from #2283.
+
+## PR #2293 — polynomial_quotient_ring # needs sage.modules (MERGED 2026-03-23)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2293
+
+- `polynomial_quotient_ring.py`: 3 string-conversion doctests in `_element_constructor_` needed `# needs sage.modules`. Root cause: PRs #2057 + #2069 moved functionality into sage.modules without updating guards.
+
+## PR #2353 — LP docs: dual values and matrix patterns (MERGED 2026-04-08)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2353
+
+- `linear_programming.rst`: documented dual values, `get_row_dual`, matrix solution extraction patterns, `simplex_or_intopt`. Came from pain points in issue #2347 and coursework in MAT 168. Level 1 of LP ergonomics progression complete.
+
+## PR #2354 — sage.libs.linbox guards in modsym and geometry/cone (MERGED 2026-04-08)
+
+**PR:** https://github.com/passagemath/passagemath/pull/2354
+
+- `modsym/tests.py`, `geometry/cone.py`: added `# needs sage.libs.linbox` guards to doctests hitting linbox code paths in partial installs. Surfaced `affine_homset.py` line 414 numerical drift (99 vs 100) — flagged in PR description; mkoeppe confirmed pre-existing, wants separate issue.

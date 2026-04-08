@@ -69,6 +69,17 @@ Use this lens when evaluating candidates for contribution:
 * **Understand before touching**: read the code, trace the execution path,
   understand the architecture before proposing any change.
 
+### Display / notebook fixes
+
+* For rich-output or notebook-display changes, verify both the intended
+  frontend context and a nearby non-target context (for example the doctest
+  runner or `BackendSimple`).
+* Do not use backend capability alone as a proxy for frontend behavior. A
+  backend that lacks a rich output type may appear in non-notebook contexts
+  too.
+* When environment detection is needed, prefer existing Sage helpers over
+  introducing a new heuristic.
+
 ---
 
 ## GitHub identity
@@ -101,6 +112,9 @@ Use this lens when evaluating candidates for contribution:
     committed
 
 * uv venvs:
+  * `.venv-contrib` (Python 3.12) — **contribution testing venv**:
+    passagemath-repl, passagemath-combinat, passagemath-plot,
+    passagemath-polyhedra, passagemath-glpk. Use this for doctests.
   * `.venv` (Python 3.12) — passagemath-polyhedra + glpk
   * `.venv311` (Python 3.11) — passagemath-polyhedra + glpk
   * `.venv-explore` (Python 3.12) — passagemath-combinat, passagemath-plot,
@@ -108,11 +122,55 @@ Use this lens when evaluating candidates for contribution:
 
 * `from sage.numerical.mip import MixedIntegerLinearProgram` works in
   `.venv311`
-* Cannot run `sage -t` (no full sage CLI); doctests verified manually via
-  Python shell
+* Cannot run `sage -t` (no full sage CLI)
 * Test runner for mip package: `tox -e passagemath`
 * Jupyter at `/Users/goddess/foundry/sandbox/jupyter-sandbox/` (Python 3.13);
   `.venv-explore` registered as kernel "passagemath"
+
+### Running doctests
+
+No full build required. Install `passagemath-repl` (pure Python) into the
+working venv, then use `--environment sage.all__sagemath_<package>` matching
+the file's package:
+
+```bash
+uv pip install passagemath-repl --python .venv/bin/python
+python -m sage.doctest --environment sage.all__sagemath_combinat src/sage/combinat/partition.py
+```
+
+The `all__sagemath_<package>` modules live in the venv's `sage/` root and
+populate the doctest global namespace with that package's symbols. Use the
+one matching the package of the file under test:
+
+| File in...           | Environment                     |
+| -------------------- | ------------------------------- |
+| `sage/combinat/`     | `sage.all__sagemath_combinat`   |
+| `sage/categories/`   | `sage.all__sagemath_categories` |
+| `sage/numerical/`    | install `passagemath-polyhedra` |
+
+**Do not use:**
+- `sage.repl.ipython_kernel.all_jupyter` — still requires `sage.all_cmdline`
+- `sage.doctest.all` — too minimal, math symbols not in scope
+- `sage.all__sagemath_repl` — repl-only, same problem
+
+`sage.all_cmdline` does NOT exist in a modular passagemath install. It is
+only present in the full monolithic SageMath build.
+
+### Testing local source changes
+
+The modular venv runs doctests against the **installed** package in
+`site-packages`, not the local `src/` tree. Using `PYTHONPATH=src` fails
+because unbuilt compiled modules (`sage.cpython.atexit`,
+`sage.structure.element`, etc.) are missing.
+
+To test a patch against local changes without a full build:
+1. Copy the modified file(s) into the installed site-packages location
+2. Run doctests there
+3. Restore the originals
+
+For most pure-Python PRs, CI is the authoritative test of the actual patch.
+Local doctests can verify the installed baseline and catch obvious breakage,
+but they do not run against your working tree.
 
 ---
 

@@ -1,4 +1,4 @@
-# Agent State — 2026-03-24
+# Agent State — 2026-04-08
 
 ## Active PRs (waiting on CI / review)
 
@@ -19,18 +19,21 @@ All pre-term multiplier work is done:
   - #2284 (WASM recipe) — advanced
   - #2290 (sage-discrete-math OER) — beginner
 
-## Team members (introduced in #2269)
-
-- **QihanQG** — CS/Math major
-- **Runze2026** (Tony) — Math + CS minor
-
 ## What's next
 
 - Wait for CI on #2292, #2293; respond to any mkoeppe review
 - Optimization course starts 2026-03-30 — notebook work begins then
 - Issue #2291 (mkoeppe's polyhedral geometry meta-issue) — long task list, skim for course-adjacent items
 
-## Recent session summary (2026-03-24)
+## Session summary (2026-04-08)
+
+- Investigated local doctest setup. `sage.all_cmdline` lives in `sagemath-repl`
+  (pure Python). Two paths to get doctests working: install `passagemath-repl`
+  via uv, or use `--environment` flag on the doctest runner. Documented in
+  AGENTS.md under "Running doctests". Try Path B first.
+- PR #2292 still open, needs ping to mkoeppe. CI failures are pre-existing noise.
+
+## Previous session summary (2026-03-24)
 
 - Created `exercises/ci-failure-discovery/` notebook (notebook 3): teaches how to find real failures in noisy CI logs, why test-mod fails when local passes, and how to trace NameError back to missing guard
 - Resolved git rebase conflict when remote restructured exercises into per-subdirectory format

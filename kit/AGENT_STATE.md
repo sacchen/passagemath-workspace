@@ -1,8 +1,8 @@
-# Agent State — 2026-04-08
+# Agent State — 2026-04-09
 
 ## Active PRs (waiting on CI / review)
 
-None.
+- **#2356 (Draft)**: Fix complex-tolerance comparison in numerical point filtering (`abs()` fix for `affine_homset.py` and `projective_homset.py`).
 
 ## Recently merged
 
@@ -27,9 +27,21 @@ All pre-term multiplier work is done:
 
 ## What's next
 
-- Wait for CI on #2354, #2292, #2293; respond to any mkoeppe review
-- Optimization course starts 2026-03-30 — notebook work begins then
-- Issue #2291 (mkoeppe's polyhedral geometry meta-issue) — long task list, skim for course-adjacent items
+- **LP Level 1 complete** — #2353 merged. Now at Level 1 → Level 2 threshold.
+- **Finish dual-value notebook** (`exercises/linear-programming-duals/`) — uncommitted changes in progress. This is the learning artifact that sharpens Level 2 design opinions.
+- **Schedule mkoeppe meeting** — come with: friction points in `mip.py`, candidate interfaces for ergonomic helpers, concrete MAT 168 problems as test cases. No Level 2 code before this.
+- **#2356 (Draft)**: Wait for CI; respond to mkoeppe review.
+- Issue #2291 (polyhedral geometry meta-issue) — skim for course-adjacent items.
+
+## Session summary (2026-04-08 — PR #2356 Red-teaming)
+
+- **Red-Teamed PR #2356**: Investigated the `abs(g(list(S))) < zero_tol` fix for numerical point filtering in `affine_homset.py` and `projective_homset.py` (Issue #2355).
+- **Findings**: 
+  - The fix correctly addresses a **false positive** vulnerability where `CDF` and `CC` objects bypass the `<` operator via real-part evaluation (e.g., `CDF(1e-12 + 1000j) < 1e-9` returns `True`). This allows non-roots with massive imaginary components or large negative real residuals to mistakenly pass as valid points.
+  - The fix is mathematically sound but strictly more restrictive (pruning).
+  - On Gemini's container (does not reproduce the bug): the 100-point doctest passes under both old and new logic; max absolute residual across all 100 roots was ~`9.15e-10`, comfortably under `1e-9`. The bug is likely environment-specific (Python 3.14 CI builds per issue #2355).
+  - **Open question**: whether `abs()` actually fixes the 99-count failure on the affected environment. Mathematically, `abs()` is strictly more restrictive than real-part comparison, so it cannot recover a root dropped by the old filter. CI on the PR will be the ground truth.
+- **Testing Discoveries**: Found the correct `--environment` flag for `sage/schemes/` files (`sage.all__sagemath_schemes`). `# needs sage.libs.singular` tests are still skipped without `passagemath-singular` installed — that install path remains unresolved. See AGENTS.md.
 
 ## Session summary (2026-04-08)
 

@@ -97,6 +97,11 @@ still uses `Popen`, so startup failures are not fully surfaced in the terminal. 
 the common “JupyterLab already running” case, and `--no-open` remains the escape hatch when you want
 to manage the notebook yourself.
 
+**Some modules still fail in the bundled environment** — `pm-explore` can now distinguish between
+local-checkout import failures and failures in the installed `passagemath-standard` environment, and
+it raises one explicit error when both paths fail. That makes the failure mode much clearer, but it
+does not solve underlying environment-level import problems for specific modules.
+
 ## Audience
 
 Primary: sacchen and research teammates exploring the passagemath source.

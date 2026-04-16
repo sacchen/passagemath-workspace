@@ -16,8 +16,9 @@ without searching docs, and without having to figure out the right imports or ke
 - Run from anywhere, but the most convenient workflow is:
   - `cd ../passagemath/src/sage/combinat/ && pm-explore partition.py`
   - `cd ../passagemath/src/sage/graphs/ && pm-explore graph.py`
-- Notebook lands in `~/.local/share/pm-explore/` by default, regardless of where you run the command
-- Kernel: `passagemath (explore)` — uses `passagemath-standard` so any file in the monorepo works
+- Notebook lands in `~/.local/share/pm-explore/` by default. If a notebook with the same name exists, a numeric suffix is added (e.g. `explore_partition_1.ipynb`) to prevent overwriting your notes.
+- Kernel: `passagemath (explore)` — uses `passagemath-standard`. The tool automatically ensures the kernel remains valid even after reinstalling the tool.
+- Local Source Prioritization: For `.py` files, the notebook first tries to import from your local `src/` checkout. If that local import fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. This does not apply to `.pyx` files, which still run the installed extension code.
 - `--no-open` skips launching JupyterLab and just prints the notebook path
 - If a compatible Jupyter server is already running, `pm-explore` reuses it; otherwise it starts a dedicated server
 - `--new-lab` forces a fresh JupyterLab server
@@ -27,6 +28,10 @@ without searching docs, and without having to figure out the right imports or ke
 
 **Static analysis only** — the tool parses the file with AST (`.py`) or regex (`.pyx`) without
 importing it. This means it works even when the environment is broken or imports fail.
+
+**Local path injection with fallback** — for pure Python (`.py`) files, the generated import cell tries your local checkout first by prepending the source root to `sys.path`. If that import fails, the notebook falls back to the installed package and prints a warning instead of leaving the notebook broken. Cython (`.pyx`) files still import the pre-built extensions from `passagemath-standard`.
+
+**Safe naming** — to protect user notes and experiments, `pm-explore` never silently overwrites an existing notebook. It checks for collisions and generates a new unique filename if needed.
 
 **`passagemath-standard`** as the single dependency — covers all 38 packages (pari, singular,
 gap, flint, schemes, etc.) so the user never has to think about which package a file needs.

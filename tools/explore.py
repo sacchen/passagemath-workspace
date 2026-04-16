@@ -58,9 +58,22 @@ def default_scratch_dir() -> Path:
 # ---------------------------------------------------------------------------
 
 def ensure_kernel():
-    """Register the Jupyter kernel if not already present."""
+    """Register the Jupyter kernel if not already present or if the path is stale."""
     kernel_dir = Path.home() / ".local" / "share" / "jupyter" / "kernels" / KERNEL_NAME
-    if not kernel_dir.exists():
+    kernel_json = kernel_dir / "kernel.json"
+    needs_install = not kernel_json.exists()
+
+    if not needs_install:
+        try:
+            data = json.loads(kernel_json.read_text())
+            spec_argv = data.get("argv", [])
+            if not spec_argv or spec_argv[0] != sys.executable:
+                print(f"Kernel path is stale (expected {sys.executable}).")
+                needs_install = True
+        except (json.JSONDecodeError, KeyError, IndexError):
+            needs_install = True
+
+    if needs_install:
         print(f"Registering kernel '{KERNEL_NAME}'...")
         subprocess.run(
             [
@@ -145,21 +158,26 @@ def reusable_lab_url(notebook_path: Path, server: dict) -> str | None:
 # Module name detection
 # ---------------------------------------------------------------------------
 
-def module_from_path(file_path: Path) -> str:
+def module_from_path(file_path: Path) -> tuple[str, Path | None]:
     """
-    Derive the Python module name from a file path.
+    Derive the Python module name and source root from a file path.
 
-    src/sage/combinat/partition.py  ->  sage.combinat.partition
-    /any/prefix/sage/graphs/graph.py  ->  sage.graphs.graph
+    src/sage/combinat/partition.py  ->  (sage.combinat.partition, /.../src)
+    /any/prefix/sage/graphs/graph.py  ->  (sage.graphs.graph, /any/prefix/sage/..)
     """
     parts = file_path.parts
+    module_parts = []
+    src_root = None
+
     # Walk back to find 'sage' after 'src', or just 'sage' if no 'src'
     if "src" in parts:
         idx = list(parts).index("src")
         module_parts = parts[idx + 1 :]
+        src_root = Path(*parts[: idx + 1])
     elif "sage" in parts:
         idx = list(parts).index("sage")
         module_parts = parts[idx:]
+        src_root = Path(*parts[:idx])
     else:
         print(
             f"Warning: could not find 'sage' or 'src' in path {file_path}. "
@@ -170,7 +188,7 @@ def module_from_path(file_path: Path) -> str:
     stem = ".".join(module_parts)
     for suffix in (".py", ".pyx"):
         stem = stem.removesuffix(suffix)
-    return stem
+    return stem, src_root
 
 
 # ---------------------------------------------------------------------------
@@ -453,7 +471,33 @@ def _code(source: str) -> dict:
     }
 
 
-def build_notebook(file_path: Path, module_name: str, parsed: dict) -> dict:
+def _import_cell(module_name: str, src_root: Path | None) -> str:
+    """Build the notebook import cell."""
+    if src_root is None:
+        return f"from {module_name} import *"
+
+    src_root_str = repr(str(src_root.resolve()))
+    module_name_str = repr(module_name)
+    return (
+        "import os, sys\n"
+        f"_pm_explore_src_root = os.path.abspath({src_root_str})\n"
+        f"_pm_explore_module = {module_name_str}\n"
+        "sys.path.insert(0, _pm_explore_src_root)\n"
+        "try:\n"
+        "    exec(f'from {_pm_explore_module} import *', globals())\n"
+        "    print(f'Imported {_pm_explore_module} from local checkout: {_pm_explore_src_root}')\n"
+        "except Exception as exc:\n"
+        "    if sys.path and sys.path[0] == _pm_explore_src_root:\n"
+        "        sys.path.pop(0)\n"
+        "    print(\n"
+        "        f'Local checkout import failed for {_pm_explore_module} '\n"
+        "        f'({exc.__class__.__name__}: {exc}). Falling back to installed package.'\n"
+        "    )\n"
+        "    exec(f'from {_pm_explore_module} import *', globals())\n"
+    )
+
+
+def build_notebook(file_path: Path, module_name: str, src_root: Path | None, parsed: dict) -> dict:
     cells: list[dict] = []
 
     # Header
@@ -473,7 +517,7 @@ def build_notebook(file_path: Path, module_name: str, parsed: dict) -> dict:
         cells.append(_md("\n".join(toc_lines)))
 
     # Import cell — wildcard import so all examples run as-is
-    cells.append(_code(f"from {module_name} import *"))
+    cells.append(_code(_import_cell(module_name, src_root)))
 
     for item in parsed["items"]:
         kind = "Class" if item["type"] == "class" else "Function"
@@ -560,12 +604,22 @@ def main() -> None:
     if not parsed["items"]:
         print(f"Warning: no public functions or classes found in {file_path.name}")
 
-    module_name = module_from_path(file_path)
-    notebook = build_notebook(file_path, module_name, parsed)
+    module_name, src_root = module_from_path(file_path)
+    if suffix == ".pyx":
+        src_root = None  # Do not inject local source path for Cython extensions
+
+    notebook = build_notebook(file_path, module_name, src_root, parsed)
 
     scratch_dir = default_scratch_dir()
     scratch_dir.mkdir(parents=True, exist_ok=True)
+
+    # Prevent silent overwrite
     out_path = scratch_dir / f"explore_{file_path.stem}.ipynb"
+    counter = 1
+    while out_path.exists():
+        out_path = scratch_dir / f"explore_{file_path.stem}_{counter}.ipynb"
+        counter += 1
+
     out_path.write_text(json.dumps(notebook, indent=1))
     print(f"Generated: {out_path}")
 

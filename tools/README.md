@@ -1,12 +1,12 @@
 # tools
 
-Command-line tools for exploring the passagemath source code.
+Command-line tools for working with the passagemath source code.
 
 ---
 
 ## pm-explore
 
-Generates an interactive Jupyter notebook from any passagemath source file. Each public class and function gets a section with its one-line description and runnable examples drawn from its docstring. The notebook opens in JupyterLab, ready to run.
+Generates an interactive Jupyter notebook from any passagemath source file, so you can explore the codebase and try out features without worrying about environments, kernels, or imports. Each public class and function gets a section with its description and runnable examples drawn from its docstring. The notebook opens in JupyterLab ready to run, reusing an existing server if one is already running.
 
 ### Prerequisites
 
@@ -17,13 +17,10 @@ No separate JupyterLab install needed — it's bundled with the tool.
 
 ### Install
 
-From the root of `passagemath-workspace/`:
-
 ```bash
+# from passagemath-workspace/
 uv tool install tools/
 ```
-
-This downloads `passagemath-standard` and installs `pm-explore` globally.
 
 ### Usage
 
@@ -34,15 +31,13 @@ cd ../passagemath/src/sage/combinat/
 pm-explore partition.py
 ```
 
-`pm-explore` generates the notebook, saves it to `~/.local/share/pm-explore/`, and opens it in JupyterLab. If a JupyterLab server is already running and can see the notebook directory, it reuses it; otherwise it starts a dedicated server.
-
-You can also pass a full path from anywhere:
+Or pass a full path from anywhere:
 
 ```bash
 pm-explore ../passagemath/src/sage/combinat/partition.py
 ```
 
-**The notebook runs your local `.py` file inside the installed Sage runtime**, so doctest examples have access to common Sage names (`graphs`, `Partitions`, `Graph`) without manual setup. For `.pyx` files, the installed extension code is used directly.
+The notebook is saved to `~/.local/share/pm-explore/` and opens in JupyterLab. Your local `.py` file runs inside the installed Sage runtime, so examples have access to common Sage names (`graphs`, `Partitions`, `Graph`) without any extra setup. For `.pyx` files, the installed extension is used directly.
 
 #### Options
 
@@ -66,9 +61,10 @@ The first time you run `pm-explore`, it registers a Jupyter kernel called `passa
 
 ### Updating
 
-After a `git pull` in `passagemath-workspace/`, reinstall from its root with both flags:
+After a `git pull` in `passagemath-workspace/`, reinstall from its root:
 
 ```bash
+# from passagemath-workspace/
 uv tool install tools/ --force --reinstall
 ```
 

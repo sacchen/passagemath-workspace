@@ -6,7 +6,7 @@ Command-line tools for working with the passagemath source code.
 
 ## pm-explore
 
-Generates an interactive Jupyter notebook from any passagemath source file, so you can explore the codebase and try out features without worrying about environments, kernels, or imports. Each public class and function gets a section with its description and runnable examples drawn from its docstring. The notebook opens in JupyterLab ready to run, reusing an existing server if one is already running.
+When you want to explore a file or feature in the passagemath source, point `pm-explore` at any `.py` or `.pyx` file and get an interactive Jupyter notebook with every public class and function, its description, and runnable examples drawn from the docstrings — no environment setup or kernel configuration needed.
 
 ### Prerequisites
 

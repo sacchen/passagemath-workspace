@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "passagemath-explore"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "passagemath-standard",
+    "passagemath-repl",
+    "ipykernel",
+    "jupyterlab>=4",
+]
+
+[project.scripts]
+pm-explore = "explore:main"
+
+[tool.setuptools]
+py-modules = ["explore"]

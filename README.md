@@ -21,6 +21,10 @@ rabbit holes worth understanding even if there's no clear PR at the end.
 - [webgpu-math-viz.md](nerdsnipe/webgpu-math-viz.md) — GPU-accelerated math visualization in the browser
 - [wasm-overview.md](nerdsnipe/wasm-overview.md) — the full picture of the passagemath WASM effort
 
+## `/tools` — contributor tooling
+
+- [pm-explore](tools/README.md) — generate a runnable Jupyter notebook from any passagemath source file. designed so you can `cd` to a source directory, run a short command, and keep generated notebooks out of the passagemath repo.
+
 ## contributor resources
 
 - [onboarding.md](onboarding.md) — getting oriented: setup, repo structure, contribution workflow

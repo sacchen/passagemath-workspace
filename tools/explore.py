@@ -496,10 +496,17 @@ def _import_cell(module_name: str, src_root: Path | None) -> str:
 
     src_root_str = repr(str(src_root.resolve()))
     module_name_str = repr(module_name)
+    root_package_str = repr(module_name.split(".", 1)[0])
     return (
         "import os, sys\n"
         f"_pm_explore_src_root = os.path.abspath({src_root_str})\n"
         f"_pm_explore_module = {module_name_str}\n"
+        f"_pm_explore_root_package = {root_package_str}\n"
+        "_pm_explore_modules_before = {\n"
+        "    name: module\n"
+        "    for name, module in sys.modules.items()\n"
+        "    if name == _pm_explore_root_package or name.startswith(_pm_explore_root_package + '.')\n"
+        "}\n"
         "sys.path.insert(0, _pm_explore_src_root)\n"
         "try:\n"
         "    exec(f'from {_pm_explore_module} import *', globals())\n"
@@ -507,11 +514,27 @@ def _import_cell(module_name: str, src_root: Path | None) -> str:
         "except Exception as exc:\n"
         "    if sys.path and sys.path[0] == _pm_explore_src_root:\n"
         "        sys.path.pop(0)\n"
+        "    for name in list(sys.modules):\n"
+        "        if name != _pm_explore_root_package and not name.startswith(_pm_explore_root_package + '.'):\n"
+        "            continue\n"
+        "        previous = _pm_explore_modules_before.get(name)\n"
+        "        current = sys.modules.get(name)\n"
+        "        if previous is None or current is not previous:\n"
+        "            sys.modules.pop(name, None)\n"
         "    print(\n"
         "        f'Local checkout import failed for {_pm_explore_module} '\n"
         "        f'({exc.__class__.__name__}: {exc}). Falling back to installed package.'\n"
         "    )\n"
-        "    exec(f'from {_pm_explore_module} import *', globals())\n"
+        "    try:\n"
+        "        exec(f'from {_pm_explore_module} import *', globals())\n"
+        "    except Exception as fallback_exc:\n"
+        "        raise RuntimeError(\n"
+        "            f'pm-explore could not import {_pm_explore_module} from either the local checkout '\n"
+        "            f'or the installed package environment. '\n"
+        "            f'Local import error: {exc.__class__.__name__}: {exc}. '\n"
+        "            f'Installed import error: {fallback_exc.__class__.__name__}: {fallback_exc}. '\n"
+        "            'This usually means the underlying passagemath environment cannot import this module cleanly.'\n"
+        "        ) from None\n"
     )
 
 

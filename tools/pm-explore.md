@@ -18,7 +18,7 @@ without searching docs, and without having to figure out the right imports or ke
   - `cd ../passagemath/src/sage/graphs/ && pm-explore graph.py`
 - Notebook lands in `~/.local/share/pm-explore/` by default. If a notebook with the same name exists, a numeric suffix is added (e.g. `explore_partition_1.ipynb`) to prevent overwriting your notes.
 - Kernel: `passagemath (explore)` — uses `passagemath-standard`. The tool automatically ensures the kernel remains valid even after reinstalling the tool (repair is automatic and safe across concurrent runs).
-- Local Source Prioritization: For `.py` files, the notebook first tries to import from your local `src/` checkout. If that local import fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. This does not apply to `.pyx` files, which still run the installed extension code.
+- Local Source Prioritization: For `.py` files, the notebook first tries to import from your local `src/` checkout. If that local import fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. If the installed package import also fails, the notebook raises one explicit error explaining that the underlying passagemath environment cannot import the module cleanly. This does not apply to `.pyx` files, which still run the installed extension code.
 - `--no-open` skips launching JupyterLab and just prints the notebook path
 - If a compatible Jupyter server is already running, `pm-explore` reuses it; otherwise it starts a dedicated server
 - `--new-lab` forces a fresh JupyterLab server
@@ -29,7 +29,7 @@ without searching docs, and without having to figure out the right imports or ke
 **Static analysis only** — the tool parses the file with AST (`.py`) or regex (`.pyx`) without
 importing it. This means it works even when the environment is broken or imports fail.
 
-**Local path injection with fallback** — for pure Python (`.py`) files, the generated import cell tries your local checkout first by prepending the source root to `sys.path`. If that import fails because the checkout needs compiled pieces or other unavailable artifacts, the notebook falls back to the installed package and prints a warning instead of leaving the notebook broken. Cython (`.pyx`) files still import the pre-built extensions from `passagemath-standard`.
+**Local path injection with fallback** — for pure Python (`.py`) files, the generated import cell tries your local checkout first by prepending the source root to `sys.path`. If that import fails because the checkout needs compiled pieces or other unavailable artifacts, the notebook falls back to the installed package and prints a warning. If the installed import fails too, the notebook raises one explicit environment-level error instead of surfacing a confusing chain of partial-import tracebacks. Cython (`.pyx`) files still import the pre-built extensions from `passagemath-standard`.
 
 **Safe naming** — to protect user notes and experiments, `pm-explore` never silently overwrites an existing notebook. It checks for collisions and generates a new unique filename if needed.
 

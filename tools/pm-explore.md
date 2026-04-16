@@ -29,7 +29,7 @@ without searching docs, and without having to figure out the right imports or ke
 **Static analysis only** — the tool parses the file with AST (`.py`) or regex (`.pyx`) without
 importing it. This means it works even when the environment is broken or imports fail.
 
-**Local path injection with fallback** — for pure Python (`.py`) files, the generated import cell tries your local checkout first by prepending the source root to `sys.path`. If that import fails, the notebook falls back to the installed package and prints a warning instead of leaving the notebook broken. Cython (`.pyx`) files still import the pre-built extensions from `passagemath-standard`.
+**Local path injection with fallback** — for pure Python (`.py`) files, the generated import cell tries your local checkout first by prepending the source root to `sys.path`. If that import fails because the checkout needs compiled pieces or other unavailable artifacts, the notebook falls back to the installed package and prints a warning instead of leaving the notebook broken. Cython (`.pyx`) files still import the pre-built extensions from `passagemath-standard`.
 
 **Safe naming** — to protect user notes and experiments, `pm-explore` never silently overwrites an existing notebook. It checks for collisions and generates a new unique filename if needed.
 
@@ -103,7 +103,7 @@ Primary: sacchen and research teammates exploring the passagemath source.
 All teammates are expected to have `passagemath-workspace` cloned locally (it's the onboarding hub).
 Setup instructions live in `tools/README.md`.
 
-## What would make it significantly better
+## Likely next bets
 
 1. **VSCode integration** — instead of opening JupyterLab in a browser, surface the notebook
    directly in the VSCode Jupyter extension. Would avoid the browser tab and kernel selection step.
@@ -113,3 +113,7 @@ Setup instructions live in `tools/README.md`.
 
 3. **`.pyx` method-level extraction** — Cython files currently only get top-level class/function
    docstrings. Full method extraction would require a more robust parser.
+
+4. **Notebook refresh ergonomics** — the current “never overwrite” behavior protects notes, but it
+   also means repeated runs create suffixed notebooks. It may be worth offering an explicit refresh
+   mode once real user workflows settle.

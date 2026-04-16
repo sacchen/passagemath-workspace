@@ -502,6 +502,11 @@ def _import_cell(module_name: str, src_root: Path | None) -> str:
         f"_pm_explore_src_root = os.path.abspath({src_root_str})\n"
         f"_pm_explore_module = {module_name_str}\n"
         f"_pm_explore_root_package = {root_package_str}\n"
+        "if _pm_explore_root_package == 'sage':\n"
+        "    exec('from sage.all import *', globals())\n"
+        "    for key in list(sys.modules):\n"
+        "        if key == _pm_explore_module or key.startswith(_pm_explore_module + '.'):\n"
+        "            del sys.modules[key]\n"
         "_pm_explore_modules_before = {\n"
         "    name: module\n"
         "    for name, module in sys.modules.items()\n"
@@ -526,6 +531,8 @@ def _import_cell(module_name: str, src_root: Path | None) -> str:
         "        f'({exc.__class__.__name__}: {exc}). Falling back to installed package.'\n"
         "    )\n"
         "    try:\n"
+        "        if _pm_explore_root_package == 'sage':\n"
+        "            exec('from sage.all import *', globals())\n"
         "        exec(f'from {_pm_explore_module} import *', globals())\n"
         "    except Exception as fallback_exc:\n"
         "        raise RuntimeError(\n"
@@ -617,6 +624,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Always start a new JupyterLab server instead of reusing an existing one",
     )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite the existing notebook if it exists, instead of appending a suffix",
+    )
     return parser.parse_args()
 
 
@@ -654,12 +666,12 @@ def main() -> None:
     scratch_dir = default_scratch_dir()
     scratch_dir.mkdir(parents=True, exist_ok=True)
 
-    # Prevent silent overwrite
     out_path = scratch_dir / f"explore_{file_path.stem}.ipynb"
-    counter = 1
-    while out_path.exists():
-        out_path = scratch_dir / f"explore_{file_path.stem}_{counter}.ipynb"
-        counter += 1
+    if not args.overwrite:
+        counter = 1
+        while out_path.exists():
+            out_path = scratch_dir / f"explore_{file_path.stem}_{counter}.ipynb"
+            counter += 1
 
     out_path.write_text(json.dumps(notebook, indent=1))
     print(f"Generated: {out_path}")

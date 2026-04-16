@@ -6,9 +6,7 @@ Command-line tools for exploring the passagemath source code.
 
 ## pm-explore
 
-Generates an interactive Jupyter notebook from any passagemath source file. Each public class and function gets a section with its description and runnable examples pre-populated from its docstring.
-
-**What it does for you:** picks the kernel, uses the bundled passagemath environment, figures out the right imports, and opens JupyterLab — reusing an existing server when possible so you can start running examples immediately with less friction.
+Generates an interactive Jupyter notebook from any passagemath source file. Each public class and function gets a section with its one-line description and runnable examples drawn from its docstring. The notebook opens in JupyterLab, ready to run.
 
 ### Prerequisites
 
@@ -17,71 +15,61 @@ Generates an interactive Jupyter notebook from any passagemath source file. Each
 
 No separate JupyterLab install needed — it's bundled with the tool.
 
-### Install (once per machine)
+### Install
+
+From the root of `passagemath-workspace/`:
 
 ```bash
-uv tool install /path/to/passagemath-workspace/tools/
+uv tool install tools/
 ```
 
-Replace `/path/to/passagemath-workspace/` with wherever you cloned this repo. For example:
-
-```bash
-uv tool install ~/code/passagemath-workspace/tools/
-```
-
-This downloads passagemath-standard (all packages) and installs `pm-explore` globally. Takes a few minutes the first time.
+This downloads `passagemath-standard` and installs `pm-explore` globally.
 
 ### Usage
 
-From `passagemath-workspace/`, the easiest workflow is to navigate into your sibling `passagemath/` clone, then run `pm-explore` with just the filename:
+Navigate into the passagemath source tree and run `pm-explore` with the filename:
 
 ```bash
 cd ../passagemath/src/sage/combinat/
 pm-explore partition.py
-
-cd ../passagemath/src/sage/graphs/
-pm-explore graph.py
 ```
 
-You can still pass a longer path when convenient:
+`pm-explore` generates the notebook, saves it to `~/.local/share/pm-explore/`, and opens it in JupyterLab. If a JupyterLab server is already running and can see the notebook directory, it reuses it; otherwise it starts a dedicated server.
+
+You can also pass a full path from anywhere:
 
 ```bash
 pm-explore ../passagemath/src/sage/combinat/partition.py
 ```
 
-JupyterLab opens with a notebook ready to run. If you already have a compatible JupyterLab server running, `pm-explore` reuses it; otherwise it starts a dedicated server for the generated notebook. The notebook is always saved to a user-owned directory, `~/.local/share/pm-explore/` by default, so using `pm-explore` inside `passagemath/` never writes into the source tree.
+**The notebook runs your local `.py` file inside the installed Sage runtime**, so doctest examples have access to common Sage names (`graphs`, `Partitions`, `Graph`) without manual setup. For `.pyx` files, the installed extension code is used directly.
 
-For pure Python (`.py`) files, the notebook first tries to import from your local `passagemath/src/` checkout. If that fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. If both imports fail, the notebook raises one explicit error explaining that the underlying passagemath environment cannot import the module cleanly. For `.pyx` files, `pm-explore` uses the installed extension code.
+#### Options
 
-If you already have JupyterLab running, or just want to generate the notebook file, use:
+| Flag | Effect |
+|---|---|
+| `--no-open` | Generate the notebook but don't launch JupyterLab |
+| `--overwrite` | Overwrite the existing notebook instead of creating a numbered copy |
+| `--new-lab` | Force a new JupyterLab server even if one is already running |
 
-```bash
-pm-explore --no-open partition.py
-```
+To write notebooks somewhere other than `~/.local/share/pm-explore/`, set `PM_EXPLORE_SCRATCH_DIR`.
 
-To customize where notebooks are written, set `PM_EXPLORE_SCRATCH_DIR`.
+#### First run
 
-If you want to force a fresh JupyterLab server even when one is already running, use:
-
-```bash
-pm-explore --new-lab partition.py
-```
-
-The first time you run `pm-explore`, it registers a Jupyter kernel called `passagemath (explore)`. This takes a moment but only happens once.
+The first time you run `pm-explore`, it registers a Jupyter kernel called `passagemath (explore)`. This happens automatically and only once.
 
 ### Known limitations
 
 - `.pyx` support is partial: top-level docstrings are extracted, but method-level coverage is still shallow.
-- Some generated method cells depend on setup from earlier cells, so running the notebook top-to-bottom works more reliably than running random cells in isolation.
-- Pure re-export modules may show little or nothing, because `pm-explore` does not import the target module.
-- Re-running `pm-explore` creates suffixed notebook names instead of overwriting older scratch notebooks.
+- Method cells may depend on earlier cells (e.g. a variable defined in a class-level example). Running top-to-bottom always works; individual cells may not.
+- Pure re-export modules may show little or nothing, because `pm-explore` reads the file statically without importing it.
 
 ### Updating
 
-If `explore.py` changes (e.g. after a `git pull` in passagemath-workspace), reinstall:
+After a `git pull` in `passagemath-workspace/`, reinstall from its root with both flags:
 
 ```bash
-uv tool install /path/to/passagemath-workspace/tools/ --force --reinstall
+uv tool install tools/ --force --reinstall
 ```
 
-Both flags are required. `--force` alone hits `uv`'s package cache and won't pick up local source changes; `--reinstall` is what forces a fresh build from disk.
+`--force` alone hits `uv`'s package cache and won't pick up local edits; `--reinstall` forces a fresh build from disk.

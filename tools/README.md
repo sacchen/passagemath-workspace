@@ -51,6 +51,8 @@ pm-explore ../passagemath/src/sage/combinat/partition.py
 
 JupyterLab opens with a notebook ready to run. If you already have a compatible JupyterLab server running, `pm-explore` reuses it; otherwise it starts a dedicated server for the generated notebook. The notebook is always saved to a user-owned directory, `~/.local/share/pm-explore/` by default, so using `pm-explore` inside `passagemath/` never writes into the source tree.
 
+For pure Python (`.py`) files, the notebook first tries to import from your local `passagemath/src/` checkout. If that fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. If both imports fail, the notebook raises one explicit error explaining that the underlying passagemath environment cannot import the module cleanly. For `.pyx` files, `pm-explore` uses the installed extension code.
+
 If you already have JupyterLab running, or just want to generate the notebook file, use:
 
 ```bash
@@ -72,6 +74,7 @@ The first time you run `pm-explore`, it registers a Jupyter kernel called `passa
 - `.pyx` support is partial: top-level docstrings are extracted, but method-level coverage is still shallow.
 - Some generated method cells depend on setup from earlier cells, so running the notebook top-to-bottom works more reliably than running random cells in isolation.
 - Pure re-export modules may show little or nothing, because `pm-explore` does not import the target module.
+- Re-running `pm-explore` creates suffixed notebook names instead of overwriting older scratch notebooks.
 
 ### Updating
 

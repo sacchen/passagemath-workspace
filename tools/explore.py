@@ -57,34 +57,52 @@ def default_scratch_dir() -> Path:
 # Environment setup
 # ---------------------------------------------------------------------------
 
+def _is_kernel_stale(kernel_json: Path) -> bool:
+    if not kernel_json.exists():
+        return True
+    try:
+        data = json.loads(kernel_json.read_text())
+        spec_argv = data.get("argv", [])
+        if not spec_argv or spec_argv[0] != sys.executable:
+            return True
+    except (json.JSONDecodeError, KeyError, IndexError, OSError):
+        return True
+    return False
+
+
 def ensure_kernel():
     """Register the Jupyter kernel if not already present or if the path is stale."""
     kernel_dir = Path.home() / ".local" / "share" / "jupyter" / "kernels" / KERNEL_NAME
     kernel_json = kernel_dir / "kernel.json"
-    needs_install = not kernel_json.exists()
 
-    if not needs_install:
+    if not _is_kernel_stale(kernel_json):
+        return
+
+    print(f"Kernel path is missing or stale (expected {sys.executable}).")
+    
+    kernel_dir.parent.mkdir(parents=True, exist_ok=True)
+    lock_file = kernel_dir.parent / f"{KERNEL_NAME}.lock"
+
+    import fcntl
+    with open(lock_file, "w") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
         try:
-            data = json.loads(kernel_json.read_text())
-            spec_argv = data.get("argv", [])
-            if not spec_argv or spec_argv[0] != sys.executable:
-                print(f"Kernel path is stale (expected {sys.executable}).")
-                needs_install = True
-        except (json.JSONDecodeError, KeyError, IndexError):
-            needs_install = True
+            if not _is_kernel_stale(kernel_json):
+                return
 
-    if needs_install:
-        print(f"Registering kernel '{KERNEL_NAME}'...")
-        subprocess.run(
-            [
-                sys.executable, "-m", "ipykernel", "install",
-                "--user",
-                "--name", KERNEL_NAME,
-                "--display-name", KERNEL_DISPLAY,
-            ],
-            check=True,
-        )
-        print("Kernel registered.")
+            print(f"Registering kernel '{KERNEL_NAME}'...")
+            subprocess.run(
+                [
+                    sys.executable, "-m", "ipykernel", "install",
+                    "--user",
+                    "--name", KERNEL_NAME,
+                    "--display-name", KERNEL_DISPLAY,
+                ],
+                check=True,
+            )
+            print("Kernel registered.")
+        finally:
+            fcntl.flock(f, fcntl.LOCK_UN)
 
 
 def _jupyter_cmd(*args: str) -> list[str]:

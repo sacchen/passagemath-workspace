@@ -17,7 +17,7 @@ without searching docs, and without having to figure out the right imports or ke
   - `cd ../passagemath/src/sage/combinat/ && pm-explore partition.py`
   - `cd ../passagemath/src/sage/graphs/ && pm-explore graph.py`
 - Notebook lands in `~/.local/share/pm-explore/` by default. If a notebook with the same name exists, a numeric suffix is added (e.g. `explore_partition_1.ipynb`) to prevent overwriting your notes.
-- Kernel: `passagemath (explore)` — uses `passagemath-standard`. The tool automatically ensures the kernel remains valid even after reinstalling the tool.
+- Kernel: `passagemath (explore)` — uses `passagemath-standard`. The tool automatically ensures the kernel remains valid even after reinstalling the tool (repair is automatic and safe across concurrent runs).
 - Local Source Prioritization: For `.py` files, the notebook first tries to import from your local `src/` checkout. If that local import fails because the checkout depends on compiled pieces that are not available, it falls back to the installed package version and prints a warning. This does not apply to `.pyx` files, which still run the installed extension code.
 - `--no-open` skips launching JupyterLab and just prints the notebook path
 - If a compatible Jupyter server is already running, `pm-explore` reuses it; otherwise it starts a dedicated server

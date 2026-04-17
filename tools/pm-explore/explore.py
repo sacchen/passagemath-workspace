@@ -3,7 +3,7 @@
 explore.py — generate an explorable Jupyter notebook from a passagemath source file.
 
 Install once:
-    uv tool install /path/to/passagemath-workspace/tools/
+    uv tool install /path/to/passagemath-workspace/tools/pm-explore/
 
 Then, from anywhere:
     pm-explore ../passagemath/src/sage/combinat/partition.py   # any cwd
@@ -553,7 +553,7 @@ def build_notebook(file_path: Path, module_name: str, src_root: Path | None, par
     header = f"# `{module_name}`"
     if module_doc_short:
         header += f"\n\n{module_doc_short}"
-    header += f"\n\n*Generated from `{file_path.name}` by `tools/explore.py`.*"
+    header += f"\n\n*Generated from `{file_path.name}` by `tools/pm-explore/explore.py`.*"
     cells.append(_md(header))
 
     # Table of contents

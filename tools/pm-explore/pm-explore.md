@@ -11,8 +11,8 @@ without searching docs, and without having to figure out the right imports or ke
 
 ## Current state
 
-- Code lives in `tools/explore.py` + `tools/pyproject.toml`
-- Install once: `uv tool install /path/to/passagemath-workspace/tools/ --force --reinstall`
+- Code lives in `tools/pm-explore/explore.py` + `tools/pm-explore/pyproject.toml`
+- Install once: `uv tool install /path/to/passagemath-workspace/tools/pm-explore/ --force --reinstall`
 - Run from anywhere, but the most convenient workflow is:
   - `cd ../passagemath/src/sage/combinat/ && pm-explore partition.py`
   - `cd ../passagemath/src/sage/graphs/ && pm-explore graph.py`
@@ -74,7 +74,7 @@ one-line description. Gives you the shape before scrolling.
 
 **`uv tool install` update story** — editing `explore.py` requires `--force --reinstall` to pick
 up changes (not just `--force`, which hits a cache). Documented in README. During active
-development, run directly: `python tools/explore.py src/sage/...`
+development, run directly: `python tools/pm-explore/explore.py src/sage/...`
 
 **`.pyx` parsing is shallow** — the regex approach for Cython files only catches top-level
 `class`/`def` with docstrings in a specific format. Method-level examples in `.pyx` files

@@ -1,0 +1,193 @@
+graph LR
+
+conf([conf]):::foundation
+env([environment]):::foundation
+obj([objects]):::foundation
+
+cat[categories]:::core
+repl[repl]:::core
+
+pari[pari]:::mathlib
+ntl[ntl]:::mathlib
+flint[flint]:::mathlib
+glpk[glpk]:::mathlib
+ppl[ppl]:::mathlib
+primesieve[primesieve-primecount]:::mathlib
+
+modules[modules]:::linalg
+gsl[gsl]:::linalg
+m4ri[m4ri-m4rie]:::linalg
+iml[iml]:::linalg
+linbox[linbox]:::linalg
+
+ecl[ecl]:::cas
+maxima[maxima]:::cas
+singular[singular]:::cas
+
+graphs[graphs]:::domain
+combinat[combinat]:::domain
+gap[gap]:::domain
+groups[groups]:::domain
+schemes[schemes]:::domain
+polyhedra[polyhedra]:::domain
+plot[plot]:::domain
+symbolics[symbolics]:::domain
+brial[brial]:::domain
+
+cddlib[cddlib]:::tool
+eclib[eclib]:::tool
+lcalc[lcalc]:::tool
+libecm[libecm]:::tool
+libbraiding[libbraiding]:::tool
+homfly[homfly]:::tool
+tachyon[tachyon]:::tool
+palp[palp]:::tool
+nauty[nauty]:::tool
+planarity[planarity]:::tool
+cliquer[cliquer]:::tool
+
+gap_data["gap-pkg-*-data (x20)"]:::data
+pari_data["pari-*-data (x8)"]:::data
+
+stdnosym[standard-no-symbolics]:::apex
+std[standard]:::apex
+
+cat --> obj
+repl --> obj
+repl --> env
+pari --> env
+pari --> cat
+ntl --> env
+ntl --> cat
+flint --> cat
+flint --> ntl
+glpk --> obj
+modules --> cat
+modules --> env
+gsl --> cat
+gsl --> env
+gsl --> modules
+m4ri --> env
+m4ri --> cat
+m4ri --> modules
+iml --> env
+iml --> cat
+iml --> flint
+iml --> modules
+linbox --> env
+linbox --> cat
+linbox --> iml
+linbox --> m4ri
+ecl --> conf
+ecl --> cat
+ecl --> env
+maxima --> conf
+maxima --> ecl
+maxima --> env
+singular --> pari
+singular --> conf
+singular --> env
+singular --> cat
+singular --> modules
+singular --> flint
+graphs --> cat
+graphs --> conf
+graphs --> env
+combinat --> cat
+combinat --> env
+gap --> conf
+gap --> env
+gap --> cat
+gap --> gap_data
+gap --> repl
+groups --> cat
+groups --> gap
+groups --> modules
+polyhedra --> ppl
+polyhedra --> conf
+polyhedra --> env
+polyhedra --> glpk
+polyhedra --> modules
+schemes --> modules
+schemes --> flint
+schemes --> polyhedra
+schemes --> singular
+schemes --> conf
+plot --> cat
+plot --> modules
+symbolics --> cat
+symbolics --> env
+symbolics --> flint
+symbolics --> gsl
+symbolics --> modules
+symbolics --> ntl
+brial --> cat
+cddlib --> env
+eclib --> linbox
+eclib --> modules
+eclib --> ntl
+lcalc --> obj
+lcalc --> cat
+lcalc --> modules
+libecm --> conf
+libecm --> obj
+libecm --> cat
+libecm --> env
+tachyon --> env
+tachyon --> obj
+palp --> env
+nauty --> env
+nauty --> graphs
+planarity --> graphs
+gap_data --> conf
+gap_data --> env
+pari_data --> conf
+pari_data --> env
+
+stdnosym --> brial
+stdnosym --> cat
+stdnosym --> cddlib
+stdnosym --> cliquer
+stdnosym --> combinat
+stdnosym --> eclib
+stdnosym --> env
+stdnosym --> flint
+stdnosym --> gap
+stdnosym --> glpk
+stdnosym --> graphs
+stdnosym --> groups
+stdnosym --> homfly
+stdnosym --> lcalc
+stdnosym --> libbraiding
+stdnosym --> libecm
+stdnosym --> linbox
+stdnosym --> modules
+stdnosym --> nauty
+stdnosym --> ntl
+stdnosym --> obj
+stdnosym --> palp
+stdnosym --> pari
+stdnosym --> pari_data
+stdnosym --> planarity
+stdnosym --> plot
+stdnosym --> polyhedra
+stdnosym --> repl
+stdnosym --> schemes
+stdnosym --> singular
+stdnosym --> tachyon
+stdnosym --> ppl
+stdnosym --> primesieve
+
+std --> stdnosym
+std --> symbolics
+std --> maxima
+
+classDef foundation fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,font-weight:bold
+classDef core fill:#fef9c3,stroke:#ca8a04,color:#713f12
+classDef mathlib fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+classDef linalg fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b
+classDef cas fill:#fce7f3,stroke:#be185d,color:#831843
+classDef domain fill:#dcfce7,stroke:#16a34a,color:#14532d
+classDef tool fill:#fff7ed,stroke:#c2410c,color:#7c2d12
+classDef data fill:#f3f4f6,stroke:#9ca3af,color:#4b5563,font-style:italic
+classDef apex fill:#fee2e2,stroke:#dc2626,color:#7f1d1d,font-weight:bold

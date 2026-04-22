@@ -1,0 +1,220 @@
+graph LR
+
+benzene["benzene<br/>bliss<br/>bootstrap<br/>buckygen<br/>coxeter3<br/>doc-html<br/>doc-pdf<br/>docbuild<br/>gfan<br/>glucose<br/>kissat<br/>lrslib<br/>mcqd<br/>plantri<br/>project-cookiecutter<br/>rubiks<br/>setup<br/>sws2rst<br/>sympow<br/>tdlib"]:::group
+brial["brial"]
+categories["categories"]
+cddlib["cddlib"]
+cliquer["cliquer<br/>homfly<br/>libbraiding"]:::group
+cmr["cmr"]
+combinat["combinat"]
+conf["conf"]
+database_cremona_ellcurve["database-cremona-ellcurve<br/>database-cunningham<br/>database-jones-numfield<br/>database-kohel<br/>database-mutation-class<br/>database-odlyzko-zeta<br/>database-polytopes-4d<br/>database-symbolic-data<br/>gap-pkg-agt-data<br/>gap-pkg-caratinterface<br/>gap-pkg-cddinterface<br/>gap-pkg-curlinterface<br/>gap-pkg-difsets-data<br/>gap-pkg-float<br/>gap-pkg-normalizinterface<br/>gap-pkg-numericalsgps-data<br/>gap-pkg-rcwa-data<br/>gap-pkg-semigroups<br/>gap-pkg-sglppow-data<br/>gap-pkg-simpcomp-data<br/>gap-pkg-smallsemi-data<br/>gap-pkg-sonata-data<br/>gap-pkg-unitlib-data<br/>gap-pkg-yangbaxter-data<br/>pari-elldata<br/>pari-galpol<br/>pari-nflistdata<br/>pari-nftables<br/>pari-seadata<br/>pari-seadata-big"]:::group
+database_stein_watkins["database-stein-watkins"]
+database_stein_watkins_mini["database-stein-watkins-mini"]
+ecl["ecl"]
+eclib["eclib"]
+environment["environment"]
+flint["flint"]
+fricas["fricas"]
+frobby["frobby"]
+gap["gap"]
+gap_pkg_ctbllib_data["gap-pkg-ctbllib-data<br/>gap-pkg-irredsol-data<br/>gap-pkg-tomlib-data<br/>gap-pkg-transgrp-data<br/>pari-galdata<br/>pari-seadata-small"]:::group
+gap_pkg_factint_data["gap-pkg-factint-data<br/>gap-pkg-primgrp-data<br/>gap-pkg-smallgrp-data"]:::group
+giac["giac"]
+glpk["glpk"]
+graphs["graphs"]
+groups["groups"]
+gsl["gsl"]
+highs["highs"]
+iml["iml"]
+kenzo["kenzo"]
+latte_4ti2["latte-4ti2"]
+lcalc["lcalc"]
+libecm["libecm"]
+linbox["linbox"]
+m4ri_m4rie["m4ri-m4rie"]
+macaulay2["macaulay2<br/>msolve"]:::group
+maxima["maxima"]
+meataxe["meataxe"]
+modules["modules"]
+nauty["nauty"]
+ntl["ntl"]
+objects["objects"]
+palp["palp"]
+pari["pari"]
+planarity["planarity"]
+plot["plot"]
+polyhedra["polyhedra"]
+polymake["polymake"]
+qepcad["qepcad"]
+rankwidth["rankwidth"]
+repl["repl"]
+schemes["schemes"]
+singular["singular"]
+sirocco["sirocco"]
+standard["standard"]
+standard_no_symbolics["standard-no-symbolics"]
+symbolics["symbolics"]
+tachyon["tachyon"]
+topcom["topcom"]
+
+brial --> categories
+categories --> objects
+cddlib --> environment
+cmr --> graphs
+cmr --> modules
+combinat --> categories
+combinat --> environment
+database_cremona_ellcurve --> conf
+database_cremona_ellcurve --> environment
+database_stein_watkins --> conf
+database_stein_watkins --> database_stein_watkins_mini
+database_stein_watkins --> environment
+database_stein_watkins_mini --> conf
+database_stein_watkins_mini --> environment
+ecl --> categories
+ecl --> conf
+ecl --> environment
+eclib --> linbox
+eclib --> modules
+eclib --> ntl
+flint --> categories
+flint --> ntl
+fricas --> categories
+fricas --> conf
+fricas --> ecl
+fricas --> environment
+frobby --> categories
+frobby --> environment
+gap --> categories
+gap --> conf
+gap --> environment
+gap --> gap_pkg_factint_data
+gap --> repl
+gap_pkg_ctbllib_data --> conf
+gap_pkg_ctbllib_data --> environment
+gap_pkg_factint_data --> conf
+gap_pkg_factint_data --> environment
+giac --> categories
+glpk --> objects
+graphs --> categories
+graphs --> conf
+graphs --> environment
+groups --> categories
+groups --> gap
+groups --> modules
+gsl --> categories
+gsl --> environment
+gsl --> modules
+highs --> objects
+iml --> categories
+iml --> environment
+iml --> flint
+iml --> modules
+kenzo --> ecl
+kenzo --> graphs
+kenzo --> modules
+latte_4ti2 --> categories
+latte_4ti2 --> cddlib
+lcalc --> categories
+lcalc --> modules
+lcalc --> objects
+libecm --> categories
+libecm --> conf
+libecm --> environment
+libecm --> objects
+linbox --> categories
+linbox --> environment
+linbox --> iml
+linbox --> m4ri_m4rie
+m4ri_m4rie --> categories
+m4ri_m4rie --> environment
+m4ri_m4rie --> modules
+macaulay2 --> categories
+macaulay2 --> flint
+macaulay2 --> modules
+macaulay2 --> repl
+maxima --> conf
+maxima --> ecl
+maxima --> environment
+meataxe --> conf
+meataxe --> modules
+modules --> categories
+modules --> environment
+nauty --> environment
+nauty --> graphs
+ntl --> categories
+ntl --> environment
+palp --> environment
+pari --> categories
+pari --> environment
+planarity --> graphs
+plot --> categories
+plot --> modules
+polyhedra --> conf
+polyhedra --> environment
+polyhedra --> glpk
+polyhedra --> modules
+polymake --> categories
+polymake --> conf
+polymake --> environment
+qepcad --> environment
+qepcad --> repl
+rankwidth --> graphs
+repl --> environment
+repl --> objects
+schemes --> conf
+schemes --> flint
+schemes --> modules
+schemes --> polyhedra
+schemes --> singular
+singular --> categories
+singular --> conf
+singular --> environment
+singular --> flint
+singular --> modules
+singular --> pari
+sirocco --> modules
+standard --> maxima
+standard --> standard_no_symbolics
+standard --> symbolics
+standard_no_symbolics --> brial
+standard_no_symbolics --> categories
+standard_no_symbolics --> cddlib
+standard_no_symbolics --> cliquer
+standard_no_symbolics --> combinat
+standard_no_symbolics --> eclib
+standard_no_symbolics --> environment
+standard_no_symbolics --> flint
+standard_no_symbolics --> gap
+standard_no_symbolics --> gap_pkg_ctbllib_data
+standard_no_symbolics --> glpk
+standard_no_symbolics --> graphs
+standard_no_symbolics --> groups
+standard_no_symbolics --> lcalc
+standard_no_symbolics --> libecm
+standard_no_symbolics --> linbox
+standard_no_symbolics --> modules
+standard_no_symbolics --> nauty
+standard_no_symbolics --> ntl
+standard_no_symbolics --> objects
+standard_no_symbolics --> palp
+standard_no_symbolics --> pari
+standard_no_symbolics --> planarity
+standard_no_symbolics --> plot
+standard_no_symbolics --> polyhedra
+standard_no_symbolics --> repl
+standard_no_symbolics --> schemes
+standard_no_symbolics --> singular
+standard_no_symbolics --> tachyon
+symbolics --> categories
+symbolics --> environment
+symbolics --> flint
+symbolics --> gsl
+symbolics --> modules
+symbolics --> ntl
+tachyon --> environment
+tachyon --> objects
+topcom --> environment
+
+classDef group fill:#eee,stroke:#999,color:#333

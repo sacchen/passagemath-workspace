@@ -2,9 +2,7 @@
 Render a collapsed Mermaid dependency diagram for passagemath packages.
 
 Packages with identical required-deps and required-rdeps are collapsed into
-a single stacked node. Large groups (> STACK_THRESHOLD) are further split by
-name prefix and rendered as summary nodes ("prefix-* (N)"). Packages with no
-edges in either direction are omitted.
+a single stacked node. Packages with no edges in either direction are omitted.
 
 Usage:
     python3 extract-dep-graph.py | python3 render-collapsed.py
@@ -15,18 +13,8 @@ import json
 import sys
 from collections import defaultdict
 
-STACK_THRESHOLD = 6
-
-
 def short(name):
     return name.removeprefix("passagemath-")
-
-
-def prefix_key(name):
-    s = short(name)
-    if s.startswith("gap-pkg-"):
-        return "gap-pkg"
-    return s.split("-")[0]
 
 
 def load_graph(path=None):
@@ -84,53 +72,20 @@ def render(graph):
         rep = pkgs[0]
         nid = node_id(rep)
 
-        if len(pkgs) <= STACK_THRESHOLD:
-            if rep not in connected_reps:
-                continue
-            if len(pkgs) == 1:
-                lines.append(f'{nid}["{short(rep)}"]')
-            else:
-                label = "<br/>".join(short(p) for p in pkgs)
-                lines.append(f'{nid}["{label}"]:::group')
+        if rep not in connected_reps:
+            continue
+        if len(pkgs) == 1:
+            lines.append(f'{nid}["{short(rep)}"]')
         else:
-            if rep not in connected_reps:
-                continue
-            # Split large groups by prefix; each sub-node gets the same edges
-            by_prefix = defaultdict(list)
-            for p in pkgs:
-                by_prefix[prefix_key(p)].append(p)
-            for pfx, members in sorted(by_prefix.items()):
-                sub_nid = f"{node_id(members[0])}_grp"
-                label = f"{pfx}-*<br/>({len(members)})"
-                lines.append(f'{sub_nid}["{label}"]:::group')
-                # Remap rep → sub_nid for edge emission below
-                for p in members:
-                    pkg_to_rep[p] = f"__sub__{sub_nid}"
+            label = "<br/>".join(short(p) for p in pkgs)
+            lines.append(f'{nid}["{label}"]:::group')
 
     lines.append("")
 
-    # Re-emit edges using updated pkg_to_rep (sub-nodes)
-    edges2 = set()
-    for pkg, info in graph.items():
-        src_rep = pkg_to_rep[pkg]
-        src_nid = src_rep.removeprefix("__sub__") if src_rep.startswith("__sub__") else node_id(src_rep)
-        for dep in info["required"]:
-            if dep not in pkg_to_rep:
-                continue
-            dst_rep = pkg_to_rep[dep]
-            dst_nid = dst_rep.removeprefix("__sub__") if dst_rep.startswith("__sub__") else node_id(dst_rep)
-            if src_nid != dst_nid:
-                edges2.add((src_nid, dst_nid))
-
-    # Filter out edges to/from omitted (disconnected singleton) nodes
-    defined_nids = set()
-    for line in lines:
-        if line and line not in ("graph LR", "") and "[" in line:
-            defined_nids.add(line.split("[")[0])
-
-    for src_nid, dst_nid in sorted(edges2):
-        if src_nid in defined_nids and dst_nid in defined_nids:
-            lines.append(f"{src_nid} --> {dst_nid}")
+    for src, dst in sorted(edges):
+        src_nid = node_id(src)
+        dst_nid = node_id(dst)
+        lines.append(f"{src_nid} --> {dst_nid}")
 
     lines.append("")
     lines.append("classDef group fill:#eee,stroke:#999,color:#333")

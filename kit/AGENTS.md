@@ -5,17 +5,47 @@ directory. Claude Code also reads `CLAUDE.md` (which points here).
 
 ---
 
-## Agent roles
+## Writing style: commits, PR bodies, issue comments
 
-Each agent has a defined scope. If a task falls outside your scope, stop and
-tell the user to switch.
+All public prose must read as neutral engineering writing. Not like an AI
+wrote it; not like the user personally performed and vouched for every step.
 
-| Agent             | Scope                                                        | Hand off when                                             |
-| ----------------- | ------------------------------------------------------------ | --------------------------------------------------------- |
-| Gemini CLI        | Repo-wide search, log forensics, locating neglected patterns | Files identified — pass to Claude or Copilot to implement |
-| Claude Code       | Complex refactors, `sage.categories`, Python/Cython logic   | Task is tests or docs — switch to Copilot to save quota   |
-| Copilot (Sonnet)  | Feature implementation, tractable bug fixes, boilerplate    | Need monorepo-wide reference — switch to Gemini           |
-| Copilot (GPT-5m)  | Docs, docstrings, `uv` config, Perfect Commit assembly      | Logic changes required — switch to Sonnet                 |
+**Voice**
+
+* Impersonal and evidence-based. State what the change does and what the
+  evidence shows, never who did it: "Verified in a native xpython kernel:
+  display_data emitted" — not "I tested this and it works."
+* Never claim first-person verification ("I verified", "I confirmed"). The
+  user cannot independently verify most changes and the prose must not imply
+  they did.
+* No AI tells: no emoji, no filler adjectives ("comprehensive", "robust",
+  "seamless"), no bullet-point padding, no restating the diff in prose.
+* Concise. Say what changed, why, and how it was verified. Stop.
+
+**Attribution**
+
+* No `Co-Authored-By: Claude` trailers. No "Generated with Claude Code"
+  footers. No claude.ai session URLs. Commit messages stand alone.
+
+**Structure — the Perfect Commit** (Simon Willison)
+
+* One commit changes one thing; bundles implementation + tests + docs.
+* Subject line: `area: what changed`, imperative mood.
+* Body: the problem, the fix, the verification evidence, a link to the issue.
+* In docstrings, link issues with the `:passagemathissue:` role — plain
+  `:issue:` points at sagemath/sage, the wrong repo.
+
+**Mechanics**
+
+* Refer to Matthias Köppe as `mkoeppe` in all public content.
+* PR/issue bodies: write to a file and pass `gh ... --body-file` — backticks
+  in `--body` strings are eaten by shell command substitution.
+* Each paragraph is one unbroken line: GitHub renders single newlines as
+  line breaks, so 80-column wrapping produces mid-sentence breaks.
+* When reporting a CI failure without a confident diagnosis, post the raw
+  facts (failing test, assertion, file/line) with no interpretation.
+* No categorical claims ("none of the packages implement X") unless the
+  search that produced them is confirmed exhaustive.
 
 ---
 
@@ -34,14 +64,18 @@ tell the user to switch.
 * Prefer `uv` for all Python environment management. Never suggest `pip` as a
   primary tool.
 
+### Publishing
+
+* Never `git push` or open a PR without explicit per-action permission.
+  Plan approval covers local edits and commits only.
+
 ---
 
 ## User goals
 
 Quality over quantity. One correct, architecturally-aware PR is worth more
-than five superficial ones. Current focus: shovel-ready issues and multiplier
-work — scoping problems so others can execute. Direct technical contributions
-are reactive.
+than five superficial ones. Current mode: small, verifiable, arc-completing
+changes. Do not pitch large design-heavy directions unprompted.
 
 ## Work classification (S.N.T.)
 
@@ -55,21 +89,30 @@ Use this lens when evaluating candidates for contribution:
 * **Tractable** — surgical fixes in `src/sage/` with clear scope, testable
   in the local venv, low risk of reviewer pushback.
 
-### Interpreting CI Noise (The "Triage Tax")
+### Interpreting CI noise (the "triage tax")
 
-When reviewing failed CI runs (especially `test-mod` jobs), distinguish between three types of noise:
+When reviewing failed CI runs (especially `test-mod` jobs), distinguish three
+types of noise:
 
-1. **Modularity Gaps (High Value):** A partial install lacks an optional dependency (e.g., `linbox`), but a test hits a code path requiring it, raising `ModuleNotFoundError`. These are "asymmetric dependencies." **Fix:** Add a surgical `# needs sage.libs.X` guard to the `sage:` line initiating the test.
-2. **Baseline Drift (Do Not Touch):** Numerical drift or library updates causing output mismatches (e.g., `Got: 99` vs `Expected: 100`), flagged as "New failures" because `known-test-failures.json` is out of sync. **Do NOT edit the baseline JSON yourself.** If it appears in your PR's CI: mention it in the PR description and note it's pre-existing. If mkoeppe confirms it's a separate issue, open one — do not fold it into your current PR.
-3. **Log Clutter (Ignore):** Logs are flooded with `Warning: The tag '# needs X' may no longer be needed`. These are false positives — do not mistake them for actual missing dependencies when grepping logs via `gh api`.
+1. **Modularity gaps (high value):** a partial install lacks an optional
+   dependency (e.g. `linbox`) but a test hits a code path requiring it,
+   raising `ModuleNotFoundError`. Fix: add a surgical `# needs sage.libs.X`
+   guard to the `sage:` line initiating the test.
+2. **Baseline drift (do not touch):** output mismatches flagged as "New
+   failures" because `known-test-failures.json` is out of sync. Do NOT edit
+   the baseline JSON. If it appears in your PR's CI, note it as pre-existing
+   in the PR description; open a separate issue only if mkoeppe confirms.
+3. **Log clutter (ignore):** `Warning: The tag '# needs X' may no longer be
+   needed` floods logs and is a false positive.
+
+Also: CI red on main is common. Before investigating a PR's red CI, check
+whether main's same workflow fails identically. Windows mingw wheel/tox lanes
+are known-broken.
 
 ---
 
 ## Working principles
 
-* **Simon Willison's "Perfect Commit"**: each commit changes one thing,
-  bundles tests + implementation + documentation, links to an issue. Atomic.
-  Reviewable. Provably working.
 * **Prove it works**: manual test first, then automated test. Do not ship
   unverified diffs.
 * **No unsolicited cleanup**: PEP8 sweeps, typo PRs, docstring reformatting
@@ -116,14 +159,15 @@ When reviewing failed CI runs (especially `test-mod` jobs), distinguish between 
 
 * Clone `passagemath/passagemath` — shallow blobless clone is sufficient for most contribution work.
 
-* uv venvs (create as needed):
-  * `.venv-contrib` (Python 3.12) — **contribution testing venv**:
-    passagemath-repl, passagemath-combinat, passagemath-plot,
-    passagemath-polyhedra, passagemath-glpk. Use this for doctests.
+* uv venvs (create as needed, all live in the monorepo root):
+  * `.venv-plot` — **plot testing venv**: passagemath-plot + passagemath-repl.
+    Create fresh: `uv venv .venv-plot --python 3.12 && uv pip install passagemath-plot passagemath-repl --python .venv-plot/bin/python`
+  * `.venv-contrib` (Python 3.12) — passagemath-repl, passagemath-combinat,
+    passagemath-plot, passagemath-polyhedra, passagemath-glpk. General doctests.
   * `.venv` (Python 3.12) — passagemath-polyhedra + glpk
   * `.venv311` (Python 3.11) — passagemath-polyhedra + glpk
-  * `.venv-explore` (Python 3.12) — passagemath-combinat, passagemath-plot,
-    ipykernel; register as a Jupyter kernel for notebook work
+
+  All `.venv*` directories are gitignored at the root level.
 
 * Cannot run `sage -t` (no full sage CLI in modular installs)
 
@@ -142,11 +186,13 @@ The `all__sagemath_<package>` modules live in the venv's `sage/` root and
 populate the doctest global namespace with that package's symbols. Use the
 one matching the package of the file under test:
 
-| File in...           | Environment                     |
-| -------------------- | ------------------------------- |
-| `sage/combinat/`     | `sage.all__sagemath_combinat`   |
-| `sage/categories/`   | `sage.all__sagemath_categories` |
-| `sage/numerical/`    | install `passagemath-polyhedra` |
+| File in...           | Environment                       | Venv packages needed          |
+| -------------------- | --------------------------------- | ----------------------------- |
+| `sage/plot/`         | `sage.all__sagemath_plot`         | passagemath-plot + repl       |
+| `sage/combinat/`     | `sage.all__sagemath_combinat`     | passagemath-combinat + repl   |
+| `sage/categories/`   | `sage.all__sagemath_categories`   | passagemath-categories + repl |
+| `sage/numerical/`    | install `passagemath-polyhedra`   | passagemath-polyhedra + repl  |
+| `sage/schemes/`      | `sage.all__sagemath_schemes`      | passagemath-schemes + repl    |
 
 **Do not use:**
 - `sage.repl.ipython_kernel.all_jupyter` — still requires `sage.all_cmdline`
@@ -165,79 +211,38 @@ because unbuilt compiled modules (`sage.cpython.atexit`,
 
 To test a patch against local changes without a full build:
 1. Copy the modified file(s) into the installed site-packages location
-2. Run doctests there
-3. Restore the originals
+2. Run doctests against `src/` (the runner reads test text from `src/`, executes against the installed copy)
+3. Restore the originals when done
+
+```bash
+# Example: testing a plot patch
+SITE=.venv-plot/lib/python3.12/site-packages
+cp src/sage/plot/graphics.py $SITE/sage/plot/graphics.py
+.venv-plot/bin/python -m sage.doctest --environment sage.all__sagemath_plot src/sage/plot/graphics.py
+```
 
 For most pure-Python PRs, CI is the authoritative test of the actual patch.
 Local doctests can verify the installed baseline and catch obvious breakage,
 but they do not run against your working tree.
 
----
+**Circular import gotcha (plot package):** `sage.plot` modules cannot be
+imported with a bare `python -c "from sage.plot.line import line"` — a Cython
+circular import fires on first import. Always test plot code via
+`python -m sage.doctest`, never via a standalone script.
 
-## Completed contributions
+**`multigraphics.py` local limitation:** the file has a module-level
+`# sage.doctest: needs sage.symbolic` directive, so all its tests are skipped
+unless `passagemath-symbolics` is installed. Rely on CI for that file.
 
-### PR #6 — exception types in mip backends (Merged)
-
-* **PR:** https://github.com/passagemath/passagemath-pkg-numerical-interactive-mip/pull/6
-* **Issue:** https://github.com/passagemath/passagemath-pkg-numerical-interactive-mip/issues/5
-* Summary: `AttributeError` → `ValueError`/`RuntimeError` in
-  `abstract_backend_dictionary.py` and `glpk_backend_dictionary.py`.
-
-### PR #2237 — replace pkg_resources at configure time (Merged)
-
-* **PR:** https://github.com/passagemath/passagemath/pull/2237
-* **Lesson:** Configure-time deps need registration in: 1. the M4 macro,
-  2. `pkgs/sage-conf/pyproject.toml.m4`, 3. `.github/workflows/mingw.yml`.
-
-### Issue #2239 — PIP_FIND_LINKS invalid URI on Windows (Acted on)
-
-* Fix credited in PR #2240. Responded to within 35 minutes of filing.
-
-### PR #2253 — Fix NameError in Partitions.cardinality() (Merged)
-
-* **PR:** https://github.com/passagemath/passagemath/pull/2253
-* **Issue:** https://github.com/passagemath/passagemath/issues/2243
-* **Branch:** `fix/partitions-cardinality-no-flint-2243`
-* **File:** `src/sage/combinat/partition.py`
-* Summary: `except ImportError: pass` → `cached_number_of_partitions = None`.
-  `cardinality()` falls back to `_cardinality_from_iterator()` for n≤10,
-  raises `FeatureNotPresentError` for n>10.
-
-### Issue #2254 — Meta: NameError antipattern in modular installs (Open)
-
-* **Issue:** https://github.com/passagemath/passagemath/issues/2254
-* Full triage of ~45 scanner hits posted. PRs #2282 and #2283 address the
-  confirmed cases.
-
-### PR #2282 — pari NameError in ell_point.py and number_field.py (Open)
-
-* **PR:** https://github.com/passagemath/passagemath/pull/2282
-* **Branch:** `fix/pari-namedror-ell-nf`
-* ell_point.py (6 methods) + number_field.py (8 methods) + integer_mod_ring.py,
-  cusps.py, binary_qf.py, calculus_method.py
-
-### PR #2283 — unbound imports followup (Open)
-
-* **PR:** https://github.com/passagemath/passagemath/pull/2283
-* **Branch:** `fix/unbound-imports-followup-2254`
-* padic_extension_leaves.py, multi_polynomial_ideal.py, chart_func.py cleanup,
-  tools/check_unbound_imports.py AST checker
-
-### Issue #2256 — doctest regressions in test-mod CI (Closed/fixed by PR #2257)
-
-* automatic_semigroup.py missing `# needs sage.groups` guards
-* lazy_attribute.pyx hardcoded line number
-
-### Shovel-ready issues filed
-
-* **#2236** — plot display in plain Python kernels (implementation spec in comments)
-* **#2284** — WASM recipe contribution guide
+**`# needs sage.libs.singular` tests:** skipped unless `passagemath-singular`
+is installed (no working local install path found; source build needs
+`mesonpy`). Rely on CI (`test-mod sagemath_schemes-check`).
 
 ---
 
 ## The FeatureNotPresentError fix pattern
 
-Endorsed in #2243. Apply to all future unbound-import bugs:
+Endorsed by mkoeppe in #2243. Apply to all unbound-import bugs:
 
 ```python
 # module level
@@ -260,27 +265,36 @@ if x_func is None:
 
 ---
 
-## Dependency facts (verified)
+## Reasoning about dependency availability
 
-* **sympy**: standard pip dependency (`build/pkgs/sympy`, type=`standard`).
-  Always available when `passagemath-symbolics` is installed. Any
-  `try: import sympy / except ImportError: pass` blocks are legacy no-ops.
-* **pari / cypari2**: optional, gated by `passagemath-pari`. The
-  `try/except ImportError` pattern in `ell_point.py` and `number_field.py`
-  genuinely leaves `pari` unbound — real bugs, addressed in PR #2282.
+To determine whether package X is safe to assume present in a source file:
+find which `pkgs/sagemath-*` package contains the file, then check that
+package's `pyproject.toml.m4` — X in `[project] dependencies` means required;
+only in `[project.optional-dependencies]` or absent means optional.
 
-## Known false positives — do not file PRs
+`build/pkgs/<dep>/type` (e.g. `type=standard`) is monolithic-SageMath
+metadata and says nothing about what a pip install of a modular package
+provides. Do not cite it as evidence.
 
-* `chart_func.py` — sympy is always present
-* grep count for `pari` uses in `number_field.py`: raw `grep -v "sage:"` does
-  NOT exclude indented doctest lines. Real executable count is ~24–25.
+Known facts:
+
+* **sympy**: required dependency of `passagemath-symbolics`
+  (`pkgs/sagemath-symbolics/pyproject.toml.m4`). Safe to assume present in
+  that package's files.
+* **pari / cypari2**: optional, gated by `passagemath-pari`. Unguarded uses
+  are real bugs (class fixed in PR #2282).
+
+---
 
 ## Dead ends — do not revisit
 
-* **uv CI migration**: tracked in issue #2094. Will be driven upstream.
-* **PEP517/setup.py audit**: already on `setuptools.build_meta`. Non-issue.
-* **Issue #2225 and Windows doctest quirks (#2222, #2227, #2223)**: need
-  Windows environment. Unresolvable locally.
+* **uv CI migration / workspace restructuring**: tracked in issue #2094;
+  mkoeppe's territory. Targeted `# needs` guard fixes are welcome;
+  architectural CI rewrites are not.
 * **Contributing to upstream SageMath**: CONTRIBUTING.md says "not a safe
   environment as of 2026." Do not cross-post.
+* **Windows doctest quirks (#2222, #2223, #2225, #2227)**: need a Windows
+  environment. Unresolvable locally.
 * **Docstring typo / PEP8 sweeps**: explicitly rejected strategy.
+* **HiGHS sensitivity/ranging**: the HiGHS C API does not expose ranging
+  functions. Blocked at the API level.

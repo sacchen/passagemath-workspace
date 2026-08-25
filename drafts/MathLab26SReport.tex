@@ -1,0 +1,156 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+
+\setcounter{tocdepth}{2}
+
+\title{Davis Math Lab Project Report, Spring 2026\\
+Making passagemath more robust and easier to use\\
+Samuel Chen, Undergraduate Scholar\\
+Matthias Köppe, Faculty Mentor}
+\author{}
+\date{June 17, 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+Passagemath is a modular, pip-installable repackaging of SageMath, the open-source math software. Rather than installing all of Sage, users can install just the parts of passagemath they need and run it in plain Python environments like Google Colab that can interact with other Python tools. Math researchers, educators, and students use it for symbolic computation, combinatorics, linear programming and more.
+
+Professor Köppe leads the passagemath undergraduate group, which works on adding features or fixing bugs in the software to make it easier to use. The group also uses passagemath to explore math by writing notebooks and running experiments.
+
+This quarter, I contributed to fixing bugs in the codebase, building tools and materials to help the group, and exploring how to make linear programming easier to use in passagemath.
+
+\section{Progress}
+
+\subsection{Code contributions}
+
+I made 13 pull requests that were merged into the passagemath codebase. My approach to choosing what to work on was to prioritize based on scale, neglectedness, and fit. In the beginning, this looked like infrastructure problems that affected many areas and bugs from passagemath being modular. I used AI tools to find widespread codebase errors and read long CI logs that made it more feasible to work on the most important things. This was very helpful for getting to know the codebase. The code contributions fall into four themes.
+
+\subsubsection{Modular installation}
+
+Passagemath's modular design means code that assumed a full SageMath install could break when dependencies were missing. A common bug was a function trying to import an optional package, but the import doesn't happen, so the function errors when it is called but never assigned. I fixed this pattern for different files relating to combinatorics, number theory, and others. To help with this, I made \texttt{check\_unbound\_imports.py}, an abstract syntax tree tool that scans the codebase for this pattern, and categorized issues that needed attention or false positives.
+
+\subsubsection{Build and CI infrastructure}
+
+A newer version of setuptools deprecated \texttt{pkg\_resources} and this caused Linux build crashes. I replaced it with \texttt{importlib.metadata}. I also discovered a Windows CI failure caused by an invalid path format that affects multiple packages across many releases. Professor Köppe made the fix based on that diagnosis.
+
+\subsubsection{Plotting in Python kernels}
+
+In Colab and JupyterLite, passagemath plots used to show up as text (\texttt{Graphics object consisting of 1 graphics primitive}) instead of images. The fix was to add the method (\texttt{\_repr\_png\_} and \texttt{\_repr\_svg\_}) to the \texttt{Graphics} class so python knew where to get the images. Now plots render as images in Colab and JupyterLite. I presented the plotting fix in the mid-quarter presentations.
+
+\subsubsection{LP ergonomics}
+
+I documented dual values in the passagemath linear programming guide and describe this more in the linear programming ergonomics section below.
+
+\subsection{Supporting the team}
+
+Later, my approach was to be a multiplier and help teammates get started fast.
+
+\subsubsection{Onboarding documents and exercises}
+
+When students joined the group at the beginning of Spring 2026, I made documents to help teammates set up their passagemath research environment, made a list of shovel-ready issues that described the problem and a potential approach, and also made exercises that introduced generalized bug patterns to familiarize teammates with the codebase.
+
+I aimed for the exercise notebooks to be pedagogically great. I designed them so students could see the problem themselves, why it happens, and fix it. The goal was to give new contributors something concrete to do quickly by editing real code and fixing a real problem instead of reading documentation and files.
+
+A common problem for teammates was getting the environment set up. This involved jupyter, git, and things tended to get messy so we spent a lot of time debugging. Several teammates used these docs to get their environment running.
+
+I also helped a teammate, Runze (Tony) Yu, navigate the codebase and git workflow while he worked on a shovel-ready issue. His PR (\#2358) was merged.
+
+\subsubsection{pm-explore}
+
+The first assignment Professor Köppe gave us was to make a notebook exploring some part of passagemath. Getting the environment to work with the right kernel got a lot of people stuck and a lot of time was spent on debugging environment problems. This inspired me to make \texttt{pm-explore} which automates this.
+
+Given any passagemath file, \texttt{pm-explore} automatically generates a jupyter notebook with the environment set up so people can see what methods the file has and can immediately run and modify methods. It uses an abstract syntax tree to look at the text, so it works even when the environment is broken. Afterwards, I learned that this is similar to the runnable code in the passagemath documentation website. The \texttt{pm-explore} tool is good for having it work on your own computer like a student researcher who wants to explore the codebase would use. Students can also make changes to the notebook to explore the methods. One teammate, whose work was mainly exploring passagemath features, used \texttt{pm-explore} for that.
+
+\subsection{Linear programming ergonomics}
+
+Eventually, I decided to work on LP ergonomics because I wanted to work on something in depth.
+
+I was taking MAT 168 Optimization and tried to use passagemath instead of cvxpy. You had to write nested loops and keep track of indices often, which made it difficult to use. Some methods you would like easy access to like getting dual values had to be found in the backend (Issue~\#2347).
+
+I thought it could be worth working on because this was a place where passagemath could really be improved. Passagemath can handle symbolics and is integrated with other math things. Passagemath can do exact arithmetic over rationals and number fields, while cvxpy only handles floats. This whole idea is very big though. There would be architectural and frontend changes that would take careful design considerations. I would have to familiarize myself with what was currently going on. My plan was to edit the documentation so it would be easier to find the dual values (PR~\#2353). Next, I tried tracing through the backend with the goal of understanding what was going on. It was very difficult. The files were scattered. The next step was to work through linear programming problems myself to identify specific pain points to eventually bring up and propose potential solutions. This was something I wasn't naturally doing. I was doing cvxpy for class and doing it in passagemath was difficult.
+
+\subsection{A connection between backpropagation and linear programming}
+
+In backpropagation, gradients are computed using the chain rule. While doing LP in MAT 168, I noticed the simplex method gives dual values similar to the gradient. The dual value is how much the optimum moves if you loosen a constraint. Doing the forward pass in backpropagation is similar to using simplex to get the optimum, and reading the dual values from the final simplex dictionary is similar to the backward pass.
+
+\section{Future Plans}
+
+I plan to present work at the Math Lab poster session in Fall 2026.
+
+\section{Selected Work}
+
+A few representative samples across the kinds of work I did this quarter.
+
+\begin{description}
+  \item[Code contribution.] Plotting fix (\href{https://github.com/passagemath/passagemath/pull/2351}{PR \#2351}): added \texttt{\_repr\_png\_} and \texttt{\_repr\_svg\_} so plots render as images in plain Python kernels like Colab and JupyterLite.
+  \item[Codebase tool.] \texttt{check\_unbound\_imports.py}: an AST scanner that finds the modular-install bug pattern across the codebase (added in \href{https://github.com/passagemath/passagemath/pull/2283}{\#2283}, documented in \href{https://github.com/passagemath/passagemath/pull/2292}{\#2292}).
+  \item[Exploration tool.] \href{https://github.com/sacchen/passagemath-workspace/tree/main/tools/pm-explore}{pm-explore}: generates a runnable Jupyter notebook from any passagemath source file with the environment preconfigured, and works even when imports are broken.
+  \item[Exercise.] \href{https://github.com/sacchen/passagemath-workspace/blob/main/exercises/importerror-fix-pattern/importerror-fix-pattern.ipynb}{importerror-fix-pattern}: a guided notebook where a new contributor fixes a real instance of the modular-install bug. I endorse this one because it teaches a pattern that generalizes across the codebase.
+  \item[Supporting the team.] \href{https://github.com/sacchen/passagemath-workspace/blob/main/onboarding.md}{Onboarding/setup docs} and a \href{https://github.com/passagemath/passagemath/issues/2269\#issuecomment-4070368357}{queue of shovel-ready issues} with problem descriptions and suggested approaches for new teammates.
+  \item[Research writing.] LP dual-values documentation (\href{https://github.com/passagemath/passagemath/pull/2353}{PR \#2353}): documented how to retrieve dual values, the first step of the LP ergonomics work.
+\end{description}
+
+\section{References}
+
+\subsection*{Modular installation robustness}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2253}{\#2253} --- Fix NameError in \texttt{Partitions.cardinality()} when passagemath-flint is absent.
+  \item \href{https://github.com/passagemath/passagemath/pull/2282}{\#2282} --- Fix unbound pari NameError in five modules; lazy-import sympy in \texttt{calculus\_method}.
+  \item \href{https://github.com/passagemath/passagemath/pull/2283}{\#2283} --- Fix unbound NameError in \texttt{padic\_extension\_leaves} and \texttt{multi\_polynomial\_ideal}; add AST checker.
+  \item \href{https://github.com/passagemath/passagemath/pull/2287}{\#2287} --- Fix pickling regression introduced by \texttt{lazy\_import} in \texttt{calculus\_method.py}.
+  \item \href{https://github.com/passagemath/passagemath/pull/2293}{\#2293} --- \texttt{polynomial\_quotient\_ring}: add \texttt{\# needs sage.modules} doctest guards.
+  \item \href{https://github.com/passagemath/passagemath/pull/2292}{\#2292} --- docs, tox: document \texttt{check\_unbound\_imports} and add tox env.
+  \item \href{https://github.com/passagemath/passagemath/pull/2354}{\#2354} --- Add missing \texttt{sage.libs.linbox} doctest guards in modsym and geometry/cone.
+\end{itemize}
+
+\subsection*{Build / CI}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2237}{\#2237} --- build: replace \texttt{pkg\_resources} with \texttt{importlib.metadata} in configure check.
+  \item \href{https://github.com/passagemath/passagemath/issues/2239}{\#2239} --- \texttt{PIP\_FIND\_LINKS=file://\$SAGE\_SPKG\_WHEELS} yields invalid uri on Windows.
+\end{itemize}
+
+\subsection*{Plot display}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2351}{\#2351} --- Fix plot display in plain Python Jupyter kernels.
+  \item \href{https://github.com/passagemath/passagemath/pull/2366}{\#2366} --- plot: add \texttt{\_repr\_svg\_()} for plain Python Jupyter kernels.
+  \item \href{https://github.com/passagemath/passagemath/pull/2368}{\#2368} --- plot: fix circular import in plain Python by pre-importing \texttt{sage.structure.element}.
+\end{itemize}
+
+\subsection*{LP ergonomics}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2353}{\#2353} --- \texttt{glpk\_backend}: document \texttt{get\_row\_dual} via \texttt{MixedIntegerLinearProgram}.
+  \item \href{https://github.com/passagemath/passagemath/issues/2347}{\#2347} --- MIP workflow is harder than cvxpy for matrix-structured LP problems.
+  \item \href{https://github.com/sacchen/passagemath-workspace/blob/main/projects/lp-level2-prep.md}{lp-level2-prep notes}.
+\end{itemize}
+
+\subsection*{Numerical correctness}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2356}{\#2356} --- \texttt{affine\_homset}: fix complex-tolerance comparison in numerical point filtering.
+\end{itemize}
+
+\subsection*{External package}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath-pkg-numerical-interactive-mip/pull/6}{numerical-interactive-mip \#6} --- backends: correct exception types in dictionary constructors and pivot update.
+\end{itemize}
+
+\subsection*{Teammate PR I mentored}
+\begin{itemize}
+  \item \href{https://github.com/passagemath/passagemath/pull/2358}{\#2358} --- graphs/generic\_graph: fix \texttt{weighted\_adjacency\_matrix(vertices=True)} crash on sparse graphs (authored by Runze (Tony) Yu).
+\end{itemize}
+
+\subsection*{Documents and tools}
+\begin{itemize}
+  \item \href{https://github.com/sacchen/passagemath-workspace/blob/main/onboarding.md}{Onboarding} and \href{https://github.com/sacchen/passagemath-workspace/blob/main/setup.md}{setup} docs.
+  \item \href{https://github.com/sacchen/passagemath-workspace/blob/main/exercises/importerror-fix-pattern/importerror-fix-pattern.ipynb}{importerror-fix-pattern exercise}.
+  \item \href{https://github.com/sacchen/passagemath-workspace/blob/main/exercises/DESIGN.md}{Exercise notebook design}.
+  \item \href{https://github.com/sacchen/passagemath-workspace/tree/main/tools/pm-explore}{pm-explore}.
+\end{itemize}
+
+\end{document}

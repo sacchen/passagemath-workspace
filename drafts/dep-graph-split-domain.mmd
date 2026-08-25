@@ -1,0 +1,128 @@
+%% Part 2 of 2: Domain packages and apex (assumes foundation layer below)
+graph TD
+modules([modules]):::ref
+linbox([linbox]):::ref
+singular([singular]):::ref
+flint([flint]):::ref
+pari([pari]):::ref
+env([environment]):::ref
+conf([conf]):::ref
+glpk([glpk]):::ref
+repl([repl]):::ref
+ntl([ntl]):::ref
+ppl([ppl]):::ref
+
+graphs[graphs]:::domain
+combinat[combinat]:::domain
+gap[gap]:::domain
+groups[groups]:::domain
+schemes[schemes]:::domain
+polyhedra[polyhedra]:::domain
+plot[plot]:::domain
+symbolics[symbolics]:::domain
+brial[brial]:::domain
+
+cddlib[cddlib]:::tool
+eclib[eclib]:::tool
+lcalc[lcalc]:::tool
+libecm[libecm]:::tool
+libbraiding[libbraiding]:::tool
+homfly[homfly]:::tool
+tachyon[tachyon]:::tool
+palp[palp]:::tool
+nauty[nauty]:::tool
+planarity[planarity]:::tool
+cliquer[cliquer]:::tool
+primesieve[primesieve-primecount]:::tool
+
+gap_data["gap-pkg-*-data (x20)"]:::data
+pari_data["pari-*-data (x8)"]:::data
+
+stdnosym[standard-no-symbolics]:::apex
+std[standard]:::apex
+maxima([maxima]):::ref
+
+graphs --> modules
+graphs --> conf
+graphs --> env
+combinat --> modules
+combinat --> env
+gap --> conf
+gap --> env
+gap --> gap_data
+gap --> repl
+groups --> gap
+groups --> modules
+polyhedra --> ppl
+polyhedra --> conf
+polyhedra --> env
+polyhedra --> glpk
+polyhedra --> modules
+schemes --> modules
+schemes --> flint
+schemes --> polyhedra
+schemes --> singular
+schemes --> conf
+plot --> modules
+symbolics --> modules
+symbolics --> flint
+symbolics --> env
+symbolics --> ntl
+brial --> modules
+cddlib --> env
+eclib --> linbox
+eclib --> modules
+eclib --> ntl
+lcalc --> modules
+libecm --> conf
+libecm --> env
+tachyon --> env
+palp --> env
+nauty --> graphs
+planarity --> graphs
+gap_data --> conf
+gap_data --> env
+pari_data --> conf
+pari_data --> env
+
+stdnosym --> brial
+stdnosym --> cddlib
+stdnosym --> cliquer
+stdnosym --> combinat
+stdnosym --> eclib
+stdnosym --> flint
+stdnosym --> gap
+stdnosym --> glpk
+stdnosym --> graphs
+stdnosym --> groups
+stdnosym --> homfly
+stdnosym --> lcalc
+stdnosym --> libbraiding
+stdnosym --> libecm
+stdnosym --> linbox
+stdnosym --> modules
+stdnosym --> nauty
+stdnosym --> ntl
+stdnosym --> palp
+stdnosym --> pari
+stdnosym --> pari_data
+stdnosym --> planarity
+stdnosym --> plot
+stdnosym --> polyhedra
+stdnosym --> repl
+stdnosym --> schemes
+stdnosym --> singular
+stdnosym --> tachyon
+stdnosym --> ppl
+stdnosym --> primesieve
+
+std --> stdnosym
+std --> symbolics
+std --> maxima
+
+classDef foundation fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,font-weight:bold
+classDef ref fill:#f1f5f9,stroke:#94a3b8,color:#64748b,font-style:italic
+classDef domain fill:#dcfce7,stroke:#16a34a,color:#14532d
+classDef tool fill:#fff7ed,stroke:#c2410c,color:#7c2d12
+classDef data fill:#f3f4f6,stroke:#9ca3af,color:#4b5563,font-style:italic
+classDef apex fill:#fee2e2,stroke:#dc2626,color:#7f1d1d,font-weight:bold

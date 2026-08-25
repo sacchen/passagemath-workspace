@@ -1,0 +1,56 @@
+graph TD
+conf([conf]):::foundation
+env([environment]):::foundation
+obj([objects]):::foundation
+cat[categories]:::core
+repl[repl]:::core
+pari[pari]:::mathlib
+ntl[ntl]:::mathlib
+flint[flint]:::mathlib
+modules[modules]:::linalg
+linbox[linbox]:::linalg
+singular[singular]:::cas
+graphs[graphs]:::domain
+gap[gap]:::domain
+polyhedra[polyhedra]:::domain
+symbolics[symbolics]:::domain
+stdnosym[standard-no-symbolics]:::apex
+std[standard]:::apex
+cat --> obj
+repl --> obj
+repl --> env
+pari --> env
+pari --> cat
+ntl --> env
+ntl --> cat
+flint --> cat
+flint --> ntl
+modules --> cat
+modules --> env
+linbox --> modules
+singular --> pari
+singular --> modules
+singular --> flint
+graphs --> cat
+graphs --> env
+gap --> env
+gap --> cat
+gap --> repl
+polyhedra --> modules
+polyhedra --> env
+symbolics --> modules
+symbolics --> flint
+stdnosym --> graphs
+stdnosym --> gap
+stdnosym --> polyhedra
+stdnosym --> singular
+stdnosym --> linbox
+std --> stdnosym
+std --> symbolics
+classDef foundation fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,font-weight:bold
+classDef core fill:#fef9c3,stroke:#ca8a04,color:#713f12
+classDef mathlib fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+classDef linalg fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b
+classDef cas fill:#fce7f3,stroke:#be185d,color:#831843
+classDef domain fill:#dcfce7,stroke:#16a34a,color:#14532d
+classDef apex fill:#fee2e2,stroke:#dc2626,color:#7f1d1d,font-weight:bold

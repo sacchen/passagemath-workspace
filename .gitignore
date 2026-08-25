@@ -1,6 +1,9 @@
 .ipynb_checkpoints/
 .venv/
+tools/.venv/
+tools/uv.lock
 uv.lock
 __pycache__/
 *.pyc
 *.egg-info/
+scratch/

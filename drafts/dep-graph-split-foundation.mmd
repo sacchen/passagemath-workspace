@@ -1,0 +1,69 @@
+%% Part 1 of 2: Foundation and math library layers
+graph TD
+conf([conf]):::foundation
+env([environment]):::foundation
+obj([objects]):::foundation
+
+cat[categories]:::core
+repl[repl]:::core
+
+pari[pari]:::mathlib
+ntl[ntl]:::mathlib
+flint[flint]:::mathlib
+glpk[glpk]:::mathlib
+ppl[ppl]:::mathlib
+
+modules[modules]:::linalg
+gsl[gsl]:::linalg
+m4ri[m4ri-m4rie]:::linalg
+iml[iml]:::linalg
+linbox[linbox]:::linalg
+
+ecl[ecl]:::cas
+maxima[maxima]:::cas
+singular[singular]:::cas
+
+cat --> obj
+repl --> obj
+repl --> env
+pari --> env
+pari --> cat
+ntl --> env
+ntl --> cat
+flint --> cat
+flint --> ntl
+glpk --> obj
+modules --> cat
+modules --> env
+gsl --> cat
+gsl --> env
+gsl --> modules
+m4ri --> env
+m4ri --> cat
+m4ri --> modules
+iml --> env
+iml --> cat
+iml --> flint
+iml --> modules
+linbox --> env
+linbox --> cat
+linbox --> iml
+linbox --> m4ri
+ecl --> conf
+ecl --> cat
+ecl --> env
+maxima --> conf
+maxima --> ecl
+maxima --> env
+singular --> pari
+singular --> conf
+singular --> env
+singular --> cat
+singular --> modules
+singular --> flint
+
+classDef foundation fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,font-weight:bold
+classDef core fill:#fef9c3,stroke:#ca8a04,color:#713f12
+classDef mathlib fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+classDef linalg fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b
+classDef cas fill:#fce7f3,stroke:#be185d,color:#831843

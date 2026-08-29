@@ -229,3 +229,61 @@ uv run python -m sage.doctest src/sage/plot/multigraphics.py
 
 File a PR against [passagemath/passagemath](https://github.com/passagemath/passagemath).
 Reference issue #2236 in the commit message.
+
+## 3D follow-up (2026-08-28)
+
+Static PNG for `Graphics3d` is [PR #2698](https://github.com/passagemath/passagemath/pull/2698):
+`_render_png_()` as the shared Tachyon renderer, `_repr_png_()` on top, reused by
+`_rich_repr_tachyon()` and `_save_image_png()`. Two constraints that are easy to undo by
+accident:
+
+- It renders with Tachyon directly, not through `_save_image_png()`, whose viewer dispatch
+  defaults to `threejs` and can run `playwright install chromium` before screenshotting
+  (`base.pyx:1920`). Fine for an explicit `save_image()`, not for a hook that fires on
+  every echoed cell.
+- `_render_png_()` does not import `sage.repl`. The `Output*` containers ship only in
+  `passagemath-repl` (35 files in its RECORD, 0 in `passagemath_plot`'s), which
+  `passagemath-plot` lists only under its `test` extra.
+
+Prerequisite fixed in the same PR: `sage/interfaces/tachyon.py` imported `sage.misc.pager`
+(also `passagemath-repl`) at module scope, so `pip install 'passagemath-plot[tachyon]'`
+produced an interface that could not be imported at all.
+
+### Interactive 3D (`_repr_html_`) — not done
+
+This is **not** a packaging problem, contrary to an earlier claim in the PR description.
+Everything three.js needs is already there: `jupyter-threejs-sage` is a *required*
+dependency of `passagemath-plot`, and `sage.features.threejs` lives in
+`passagemath-environment`, so `Threejs().required_version()` works with no
+`passagemath-repl`. Verified in a clean venv.
+
+`_rich_repr_threejs()` (`base.pyx:431-653`) touches `sage.repl` in exactly two places:
+
+- `get_display_manager().threejs_scripts(online)` for the script tag (`base.pyx:582`). The
+  `online=True` branch is three lines needing only `sage.features.threejs`; the offline
+  branch delegates to a backend, which a plain kernel does not have anyway.
+- `OutputSceneThreejs(html)` at the end (`base.pyx:651`).
+
+So the work is the same extraction as `_render_png_()`: pull the raw HTML into a renderer
+that does not import `sage.repl`, and leave `_rich_repr_threejs()` as a thin wrapper.
+
+Open design question, deliberately unanswered: adding `_repr_html_()` alongside
+`_repr_png_()` makes IPython compute both, and HTML-capable frontends rank `text/html`
+above `image/png`, so the notebook stores both and renders one. Measured for
+`plot3d(sin(x*y), plot_points=[80,80])`: 686,119 bytes of scene HTML against a 21,886-byte
+PNG. `_repr_mimebundle_()` only helps if it *replaces* `_repr_png_()` — tested on IPython
+9.17, a mimebundle returning only HTML does **not** stop `_repr_png_()` being called.
+
+### Verifying any of this
+
+`sage -t` cannot test the boundary at all: `sage.doctest` itself ships in
+`passagemath-repl`. Build a real environment instead:
+
+```
+pip install 'passagemath-plot[tachyon]' passagemath-symbolics ipython
+python -c "import importlib.util as u; print(u.find_spec('sage.repl'))"   # must be None
+```
+
+then copy edited `.py` files into site-packages and rebuild the `.pyx` with the Cython
+directives from `src/meson.build` (omitting them gives ~19 spurious failures). Always run
+a pristine control through the same rebuild before trusting a delta.

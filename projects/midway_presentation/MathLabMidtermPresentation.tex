@@ -1,0 +1,114 @@
+\documentclass[10pt]{beamer}
+\mode<presentation>
+{
+	%\usetheme{Berkeley}
+     %\usetheme{Warsaw}
+      \usetheme{Singapore}
+	%\usetheme{Goettingen}
+	%\usetheme{Dresden}
+	%\usetheme{Boadilla}
+	\setbeamercovered{transparent}
+	% or whatever (possibly just delete it)
+}
+
+\usepackage{caption}
+\usepackage[font={small,it}]{caption}
+\usepackage[justification=centering]{caption}
+\usepackage[english]{babel}
+% or whatever
+\usepackage{tikz,dsfont}
+\usepackage{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+\usepackage{amsmath, amssymb ,dsfont, graphicx, hyperref}
+\usepackage{epsfig}
+\usepackage{changepage}
+
+\renewcommand{\pmod}[1]{\,(\textup{mod}\,#1)}
+\numberwithin{equation}{section}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{definition}[theorem]{Definition}
+%\newtheorem{example}[]{Example}
+
+\title[] % (optional, use only with long paper titles)
+{Project Title}
+
+\subtitle
+{} % (optional)
+
+\author[] % (optional, use only with lots of authors)
+{ 
+	(Undergraduate Names)\\ 
+ (Names) (Graduate Mentor)\\
+  (Names) (Faculty Mentor)
+}
+
+
+\institute[] 
+{
+
+		\centering
+		\includegraphics[width=0.2\textwidth]{math_logo.png}
+
+	
+}
+
+
+\date[] % (optional)
+{\scriptsize Davis Math Lab Presentation\\ May 20--21, 2026}
+
+\subject{Talks}
+
+
+
+
+\AtBeginSubsection[]
+{
+	\begin{frame}<beamer>{}
+		\tableofcontents[currentsection,currentsubsection]
+	\end{frame}
+}
+
+\begin{document}
+	\maketitle
+	
+\section{The problem}
+	\begin{frame}{The problem}
+		Describe the problem with some background. 
+	\end{frame}
+	\begin{frame}
+		
+	\end{frame}
+	\begin{frame}
+		
+	\end{frame}
+
+\section{Progress Report}
+	\begin{frame}{Progress}
+		Describe the progress that has been made.
+	\end{frame}
+	\begin{frame}
+	 Maybe include some pictures. 
+	\end{frame}
+	\begin{frame}
+		
+	\end{frame}
+
+
+\section{Future Plans}
+	\begin{frame}{Future Plans}
+		List some future plans for the project. 
+	\end{frame}
+	
+	
+\section{Other Activies}
+	\begin{frame}{Other Activities}
+		if there is any other activies 
+	\end{frame}
+
+\end{document}
+

@@ -14,7 +14,7 @@ type: project
 - `glpk_backend_dictionary.py`: `AttributeError` → `RuntimeError` for `warm_up()` failures; updated doctests
 - `coin_backend_dictionary.py`: updated doctest to match `ValueError`
 
-Bug introduced by Matthias in commit `d06701b` (Apr 2016). Kill-shot: EAFP `except AttributeError` already present in `_vendor/interactive_simplex_method.py` — raising `AttributeError` for input validation risks swallowing real missing-attribute bugs.
+Bug introduced in commit `d06701b` (Apr 2016). Kill-shot: EAFP `except AttributeError` already present in `_vendor/interactive_simplex_method.py` — raising `AttributeError` for input validation risks swallowing real missing-attribute bugs.
 
 ## PR #2237 — importlib.metadata in configure check (MERGED, Upstream candidate, in 10.8.2.rc2)
 
@@ -24,9 +24,9 @@ Bug introduced by Matthias in commit `d06701b` (Apr 2016). Kill-shot: EAFP `exce
 
 Replaced `pkg_resources.require()` (removed in setuptools 82) with `importlib.metadata` + `packaging.requirements.Requirement`. Lesson: new configure-time deps need three registrations: the M4 macro, `pkgs/sage-conf/pyproject.toml.m4`, and `mingw.yml` + `ci-mingw.yml`.
 
-## Issue #2239 / PR #2240 — PIP_FIND_LINKS Windows path bug (acted on by Matthias, credited)
+## Issue #2239 / PR #2240 — PIP_FIND_LINKS Windows path bug (acted on by mkoeppe, credited)
 
-`PIP_FIND_LINKS=file://$SAGE_SPKG_WHEELS` → `file://D:/...` on Windows — pip rejects invalid URI. Fix: drop `file://` prefix; pip `--find-links` accepts bare absolute paths. Affected ~30 `spkg-install.in` + 66 `tox.ini`. Root cause of unexplained Windows CI failures across multiple RC cycles. Matthias responded in 35 minutes.
+`PIP_FIND_LINKS=file://$SAGE_SPKG_WHEELS` → `file://D:/...` on Windows — pip rejects invalid URI. Fix: drop `file://` prefix; pip `--find-links` accepts bare absolute paths. Affected ~30 `spkg-install.in` + 66 `tox.ini`. Root cause of unexplained Windows CI failures across multiple RC cycles. mkoeppe responded in 35 minutes.
 
 ## PR #2253 — Partitions.cardinality() without flint (MERGED)
 

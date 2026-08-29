@@ -10,4 +10,4 @@ To determine whether a package is always available in a given passagemath contex
 
 **How to apply:** Before claiming "X is always present so this try/except is dead code", trace: which `pkgs/sagemath-*` package contains the file in question? Then check that package's `pyproject.toml.m4` — is X in `dependencies`? If yes, it's safe to assume. If it's only in `[project.optional-dependencies]` or absent, it's optional.
 
-**Origin:** In PR #2283, cited `build/pkgs/sympy/type = standard` as evidence that a try/except around `import sympy` in `chart_func.py` was dead code. Matthias corrected: the actual evidence is `pkgs/sagemath-symbolics/pyproject.toml.m4:32` declaring sympy a required dep. The conclusion was right but the reasoning was wrong.
+**Origin:** In PR #2283, cited `build/pkgs/sympy/type = standard` as evidence that a try/except around `import sympy` in `chart_func.py` was dead code. mkoeppe corrected: the actual evidence is `pkgs/sagemath-symbolics/pyproject.toml.m4:32` declaring sympy a required dep. The conclusion was right but the reasoning was wrong.

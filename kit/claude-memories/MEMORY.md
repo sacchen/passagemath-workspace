@@ -2,7 +2,7 @@
 
 ## User goals
 
-mkoeppe invited @sacchen to the passagemath GitHub org and research team (issue #2269). Taking Matthias's optimization course for 3 credits (~10 hrs/week) starting ~2026-03-30. Strategy: notebooks alongside the course (primary), deborgen as applied test case (secondary), infrastructure/correctness work reactive. See `strategy.md`.
+mkoeppe invited @sacchen to the passagemath GitHub org and research team (issue #2269). Strategy: notebooks alongside the optimization course (primary), infrastructure/correctness work reactive. See `strategy.md`.
 
 **Key constraint:** Quality over quantity. One perfect PR > five mediocre ones.
 
@@ -51,7 +51,7 @@ No open PRs (as of 2026-04-08). Open issues:
   - `.venv311` (Python 3.11): polyhedra + glpk; can import `MixedIntegerLinearProgram`
 - No `sage -t`; doctests run via `python -m sage.doctest --environment sage.all__sagemath_<package>`
 
-## FeatureNotPresentError pattern (Matthias-endorsed)
+## FeatureNotPresentError pattern (mkoeppe-endorsed)
 
 ```python
 try:
@@ -84,7 +84,7 @@ if x_func is None:
 
 ## Dead ends — do not revisit
 
-- **uv CI migration**: Matthias driving via issue #2094. Unsolicited CI rewrites will be closed.
+- **uv CI migration**: mkoeppe driving via issue #2094. Unsolicited CI rewrites will be closed.
 - **Contributing to upstream SageMath**: CONTRIBUTING.md says "not a safe environment as of 2026."
 - **Windows doctest issues (#2222, #2223, #2225, #2227)**: need Windows environment.
 - **Docstring/PEP8/typo sweeps**: explicitly rejected.

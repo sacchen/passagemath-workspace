@@ -1,0 +1,34 @@
+diff --git a/src/sage/misc/html.py b/src/sage/misc/html.py
+index 5346318b17..b642d72d16 100644
+--- a/src/sage/misc/html.py
++++ b/src/sage/misc/html.py
+@@ -44,0 +45 @@ class HtmlFragment(str, SageObject):
++    .. automethod:: _repr_html_
+@@ -47,0 +49,27 @@ class HtmlFragment(str, SageObject):
++    def _repr_html_(self):
++        r"""
++        Return the HTML representation of this fragment.
++
++        This allows plain IPython and Jupyter frontends to display the
++        fragment as HTML without requiring Sage's rich output system.
++
++        EXAMPLES::
++
++            sage: from sage.misc.html import HtmlFragment
++            sage: fragment = HtmlFragment('<b>test</b>')
++            sage: fragment._repr_html_()
++            '<b>test</b>'
++            sage: type(fragment._repr_html_()) is str
++            True
++
++        TESTS::
++
++            sage: from IPython.core.formatters import DisplayFormatter
++            sage: formats, metadata = DisplayFormatter().format(fragment)
++            sage: formats['text/html'] == str(fragment)
++            True
++            sage: 'text/plain' in formats
++            True
++        """
++        return str(self)
++

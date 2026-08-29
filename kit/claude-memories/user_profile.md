@@ -7,8 +7,7 @@ type: user
 ## Role and context
 
 - GitHub: sacchen, passagemath org member
-- Taking an optimization course (~10 hrs/week starting 2026-03-30)
-- Personal project: deborgen — distributed compute cooperative (idle compute pooling, allocation, eventually RL paper reproduction). Real LP/scheduling problem that the course math applies to directly.
+- Learning optimization and linear programming alongside this contribution work
 
 ## Working style preferences
 
@@ -21,4 +20,4 @@ type: user
 
 - Don't summarize what you just did — they can read the diff.
 - Don't manufacture work or pad issue queues — only verified, real bugs.
-- Don't take beginner-tier issues that should be left for students.
+- Rank work by impact, not size. (Superseded 2026-08-29: the research-team phase that reserved beginner-tier issues for students ended in June 2026.)

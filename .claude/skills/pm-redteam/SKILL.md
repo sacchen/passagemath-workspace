@@ -1,12 +1,12 @@
 ---
 name: pm-redteam
-description: Adversarially review an implemented passagemath task across relevance, scope, accuracy, approach, execution, style, and wording. Use when asked to red team a change, a PR body, or an issue draft before it goes out. Records all seven axes on the task file.
+description: Adversarially review an implemented passagemath task across relevance, scope, accuracy, approach, execution, source style, public-prose style, and wording. Use when asked to red team a change, a PR body, or an issue draft before it goes out. Records all eight axes on the task file.
 ---
 
 Argument: a task slug, or the highest-priority `state: implemented` task.
 
-Read `kit/auto/playbooks/redteam.md` and work the seven axes in order:
-relevance, scope, accuracy, approach, execution, style, wording.
+Read `kit/auto/playbooks/redteam.md` and work the eight axes in order:
+relevance, scope, accuracy, approach, execution, source-style, style, wording.
 
 Attack the work. The goal is to find what a reviewer would find, before the
 reviewer does. Recording "looks good" on an axis without having tried to
@@ -15,6 +15,7 @@ break it is the failure mode this stage exists to prevent.
 Run, do not assume:
 
 - `kit/auto/checks/negative_control.sh kit/auto/queue/<slug>.md` — the doctest must fail on unpatched code. This is the execution axis and it is not optional.
+- `kit/auto/checks/source-style.sh kit/auto/queue/<slug>.md` — inspect only added source documentation and configuration lines, resolve every error, and record the decision for every warning.
 - `kit/auto/checks/prose.py` on every draft — style and wording.
 - `kit/auto/checks/claims.py --list` on every draft, then check each flagged claim against a command and record it under `## Evidence`.
 

@@ -11,6 +11,7 @@ branch, `state: implemented`.
 4. **The doctest must be the one that would have caught the bug.** Not an example of the feature working. Never raise `KeyboardInterrupt` in a doctest; the forker reads it as a user abort. Use `ValueError` for the same `BaseException` path.
 5. **Prove the edit is live.** `sage -t` reads docstrings from the repo file and imports code from site-packages. Copy the edited `.py` into site-packages, or rebuild the `.pyx` with `kit/plot3d-repr/rebuild.sh <venv> <dotted.module> <src-dir>`. Skipping this produces false-green runs. The Cython flag list is not optional and drifts; re-read `src/meson.build` around line 280.
 6. **Run a control.** Pristine source through the same rebuild. Compare against that, never against the shipped wheel.
+7. **Run the preliminary source-style check.** `kit/auto/checks/source-style.sh <task>` reports only added lines. Fix deterministic errors now; leave contextual warnings recorded for the fresh-context pass in red team.
 
 ## Known patterns
 

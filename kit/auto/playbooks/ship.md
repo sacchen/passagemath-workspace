@@ -57,8 +57,9 @@ filing. Record the exit codes.
 kit/auto/checks/gate.sh kit/auto/queue/<slug>.md
 ```
 
-Six checks: hygiene and scope, negative control recorded, style and wording,
-claims covered by evidence, shortening drift, seven red-team axes recorded.
+Seven checks: hygiene and scope, source editorial review, negative control
+recorded, public-prose style and wording, claims covered by evidence,
+shortening drift, eight red-team axes recorded.
 On failure the task keeps its state. Fix and rerun. Do not rationalize past a
 gate; if a check is wrong, fix the check and say so.
 

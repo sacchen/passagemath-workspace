@@ -44,3 +44,14 @@ Every checkable claim that will appear in the issue, commit, or PR body.
 ## Log
 
 - YYYY-MM-DD scoped
+
+## Red team
+
+- [ ] relevance:
+- [ ] scope:
+- [ ] accuracy:
+- [ ] approach:
+- [ ] execution:
+- [ ] source-style:
+- [ ] style:
+- [ ] wording:

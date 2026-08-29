@@ -1,6 +1,6 @@
 # Stage 3 — Red team
 
-Input: `state: implemented`. Output: `state: redteamed`, with all seven axes
+Input: `state: implemented`. Output: `state: redteamed`, with all eight axes
 recorded on the task file.
 
 Attack the work as an adversary who wants it rejected. Self-review finds
@@ -13,7 +13,7 @@ Record each axis on the task file as a line the gate can read:
 - [x] relevance: <what was attacked, what survived, what changed>
 ```
 
-An axis with nothing to say still gets a line saying that. Seven `[x]` lines
+An axis with nothing to say still gets a line saying that. Eight `[x]` lines
 are required before the gate will pass.
 
 ## relevance
@@ -67,12 +67,40 @@ Then read the diff line by line as a reviewer would, and check the things a
 diff hides: moved or re-indented blocks, an early return that changes a path
 you did not consider, a `finally` that was needed and is not there.
 
+## source-style
+
+This is a separate pass over source documentation and configuration, after
+the implementation and tests are frozen. Run:
+
+```
+kit/auto/checks/source-style.sh kit/auto/queue/<slug>.md
+```
+
+Resolve every error. Read every warning in context and record the decision;
+warnings are contextual because a distribution name can be prose in one line
+and literal requirement syntax in another. Then read every added prose and
+configuration line without the implementation notes open. Use
+`kit/auto/review-conventions.md` as the maintained convention ledger.
+
+Check semantic Sphinx roles, distribution-name markup, product spelling and
+capitalization, and alignment with the entire local configuration block.
+Nearby merged code is evidence, not authority. Scan the touched documentation
+for sibling occurrences of a finding, but do not clean up pre-existing lines
+outside the change.
+
+Record the pass separately:
+
+```
+- [x] source-style: <warnings found, how each was resolved, what local block was compared>
+```
+
 ## style
 
-`prose.py` covers the mechanical half: pronouns, em dashes, AI speak, hard
-wraps, first names, footers. Run it and fix the errors. Then read for what it
-cannot see: paragraphs longer than they need to be, background the maintainer
-already has, a sentence that restates the diff.
+This axis is for the public drafts: `commit.txt`, `pr-body.md`, `issue.md`, and
+review replies. `prose.py` covers the mechanical half: pronouns, em dashes,
+AI speak, hard wraps, first names, footers. Run it and fix the errors. Then
+read for what it cannot see: paragraphs longer than they need to be,
+background the maintainer already has, a sentence that restates the diff.
 
 ## wording
 
@@ -84,9 +112,11 @@ alone and ask whether it is honest about the conditions.
 
 ## Reviewer pass
 
-Last, read the whole thing as mkoeppe: fast, one issue per comment, pointing
-at an exact line. Write down the comments it would draw. Fix them now instead
-of after posting.
+Last, read the whole diff and the drafts as mkoeppe: fast, one issue per
+comment, pointing at an exact line. Write down the comments they would draw.
+Fix them now instead of after posting. Do not keep the implementation notes
+open during this pass; familiarity makes intended meaning replace literal
+text.
 
 ## Outside review
 

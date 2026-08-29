@@ -21,14 +21,17 @@ section() { echo; echo "=== $1"; }
 section "1. scope + execution hygiene"
 bash "$HERE/hygiene.sh" "$TASK" || rc=1
 
-section "2. negative control"
+section "2. source editorial review"
+bash "$HERE/source-style.sh" "$TASK" || rc=1
+
+section "3. negative control"
 nc="$(task_key "$TASK" negative_control)"
 case "$nc" in
     fail-on-unpatched) echo "ok    recorded: fails unpatched, passes patched";;
     *) echo "FAIL  negative_control is '$nc'; run checks/negative_control.sh and record the result"; rc=1;;
 esac
 
-section "3. style and wording"
+section "4. public prose style and wording"
 drafts=()
 for d in "$ART/commit.txt" "$ART/pr-body.md" "$ART/issue.md"; do
     [ -f "$d" ] && drafts+=("$d")
@@ -43,12 +46,12 @@ else
     done
 fi
 
-section "4. accuracy: claims against evidence"
+section "5. accuracy: claims against evidence"
 if [ "${#drafts[@]}" -gt 0 ]; then
     python3 "$HERE/claims.py" --task "$TASK" "${drafts[@]}" || rc=1
 fi
 
-section "5. shortening drift"
+section "6. shortening drift"
 REV="$ART/revisions"
 if [ -d "$REV" ]; then
     for d in commit.txt pr-body.md issue.md; do
@@ -64,9 +67,9 @@ else
     echo "        checks/drift.py --save $ART/revisions $ART/pr-body.md"
 fi
 
-section "6. red-team record"
+section "7. red-team record"
 missing=""
-for axis in relevance scope accuracy approach execution style wording; do
+for axis in relevance scope accuracy approach execution source-style style wording; do
     grep -qiE "^-?\s*\[x\]\s*$axis\b" "$TASK" || missing="$missing $axis"
 done
 if [ -n "$missing" ]; then
@@ -74,7 +77,7 @@ if [ -n "$missing" ]; then
     echo "      see playbooks/redteam.md; each axis needs a '- [x] <axis>: <what was attacked, what survived>' line"
     rc=1
 else
-    echo "ok    all seven axes recorded"
+    echo "ok    all eight axes recorded"
 fi
 
 echo

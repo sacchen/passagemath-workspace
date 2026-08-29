@@ -28,6 +28,7 @@ exit code, 0 for pass and 1 for fail.
 
 ```
 kit/auto/checks/prose.py --kind commit  <file>   # commit | pr | issue | comment
+kit/auto/checks/source-style.sh <task>           # added source prose and config
 kit/auto/checks/claims.py --list        <file>   # what needs evidence
 kit/auto/checks/claims.py --task <task> <file>   # check against the ledger
 kit/auto/checks/drift.py --save <dir>   <file>   # snapshot before editing
@@ -57,16 +58,17 @@ everything.
 
 ## The gate
 
-`checks/gate.sh` is the only thing that moves a task to `ready`. Five checks:
+`checks/gate.sh` is the only thing that moves a task to `ready`. Seven checks:
 
 | check | script | fails on |
 |---|---|---|
 | scope, whitespace, compile, atomicity | `hygiene.sh` | a changed path the task did not declare; `py_compile` failure; `lazy_import('', x)`; more than one commit; a commit message without `Fixes #N` |
+| source editorial conventions | `source-style.sh` | deterministic terminology errors in added lines; contextual markup and alignment findings are warnings that must be resolved in the `source-style` axis |
 | negative control | `negative_control.sh` | the new doctest passing against unpatched code |
-| style and wording | `prose.py` | pronouns, em dashes, AI speak, hard-wrapped paragraphs, `Matthias` instead of `mkoeppe`, generated-by footers, escaped backticks |
+| public-prose style and wording | `prose.py` | pronouns, em dashes, AI speak, hard-wrapped paragraphs, `Matthias` instead of `mkoeppe`, generated-by footers, escaped backticks |
 | accuracy | `claims.py` | a categorical or numeric claim with no matching entry in the task's `## Evidence` section |
 | shortening drift | `drift.py` | a surviving sentence that got broader than the revision before it |
-| red team | `gate.sh` | fewer than seven recorded axes |
+| red team | `gate.sh` | fewer than eight recorded axes, including a separate source-style pass |
 
 `prose.py --kind {commit,pr,issue,comment}` also enforces the structural
 budget: paragraph counts, no headings, one code block.
@@ -98,11 +100,13 @@ BLOCKER, NIT, and PREFERENCE so there is something to sort on, and
 against the code before acting: outside reviewers have been confidently wrong
 here in both directions.
 
-## The seven red-team axes
+## The eight red-team axes
 
 `playbooks/redteam.md`. relevance, scope, accuracy, approach, execution,
-style, wording. Each needs a `- [x] <axis>: ...` line on the task file saying
-what was attacked and what survived.
+source-style, style, wording. Each needs a `- [x] <axis>: ...` line on the
+task file saying what was attacked and what survived. `source-style` reads
+changed source documentation and configuration; `style` reads the public
+drafts.
 
 ## Layout
 
@@ -113,6 +117,7 @@ artifacts/<slug>/       repro.py, commit.txt, issue.md, pr-body.md
 artifacts/<slug>/revisions/   snapshots, for the drift check
 playbooks/*.md          what each stage does; the skills defer to these
 checks/*.sh, *.py       the gate
+review-conventions.md   maintainer conventions learned from reviews
 ```
 
 Paths resolve through `checks/env.sh`. Override with `PM_SANDBOX`, `PM_REPO`,

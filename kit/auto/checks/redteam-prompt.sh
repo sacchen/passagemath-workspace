@@ -24,7 +24,7 @@ You are the red team on an unmerged passagemath change. Find what is wrong.
 The branch is \`$BRANCH\` in a clone of passagemath/passagemath. Read the
 diff against origin/main, then the drafts below.
 
-Review these seven axes, in this order, and skip an axis only after trying:
+Review these eight axes, in this order, and skip an axis only after trying:
 
 1. relevance   Does a user hit this? Name the install configuration and the
                action. A scanner hit with no configuration is a false positive.
@@ -42,9 +42,15 @@ Review these seven axes, in this order, and skip an axis only after trying:
                fail on unpatched code, or is it decoration? Read for what a
                diff hides: re-indented blocks, an early return, a missing
                finally.
-6. style       Short paragraphs, plain language, no personal pronouns, no em
-               dashes, no AI speak, no headings, no signposting.
-7. wording     Overstatement of timing or scope. Ambiguous antecedents. Code
+6. source-style Read only added source documentation and configuration lines.
+               Check semantic Sphinx roles, distribution-name markup, product
+               capitalization, and alignment with the whole local config
+               block. Read kit/auto/review-conventions.md. Nearby merged code
+               is evidence, not authority. Do not request unrelated cleanup.
+7. style       Public drafts only: short paragraphs, plain language, no
+               personal pronouns, no em dashes, no AI speak, no headings, no
+               signposting.
+8. wording     Overstatement of timing or scope. Ambiguous antecedents. Code
                named exactly, never "the counter" or "that part".
 
 Split every finding into exactly one bucket:

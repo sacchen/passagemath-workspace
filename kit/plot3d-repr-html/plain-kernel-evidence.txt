@@ -1,0 +1,31 @@
+Evidence for the plain-kernel claim in pr-body.md.
+
+plain-kernel-gyroid-REPRODUCER.ipynb carries NO outputs. It is the input, not
+the record: the executed notebook is 10.9 MB, almost all of it one escaped
+Three.js document, and is not worth storing. Regenerate it with
+
+  jupyter nbconvert --to notebook --execute \
+      --ExecutePreprocessor.timeout=600 \
+      --output executed.ipynb plain-kernel-gyroid-REPRODUCER.ipynb
+
+run from a venv holding the patched build (see redteam-prompt.md). The
+generator that wrote the notebook is make-plain-kernel-notebook.py.
+
+Measured on 2026-08-28, .venv-plot3d, patched build:
+
+  cell 0 stdout   kernel formatter: IPython.core.formatters.DisplayFormatter
+  cell 1 bundle   ['image/png', 'text/html', 'text/plain']
+                  image/png     128596 chars
+                  text/html   10767295 chars
+                  text/plain        17 chars
+
+plain-kernel-notebook.png is that executed notebook rendered by
+`jupyter nbconvert --to html` and screenshotted, showing the scene drawn from
+the text/html output.
+
+Sandbox test, same day, same build: an iframe carrying the sphere page with
+sandbox="allow-scripts" and one without produced byte-identical screenshots
+(sha256 60d1645e2463b616...). The threejs assets in src/sage/ext_data/threejs
+touch no localStorage, sessionStorage, cookie, parent, top, or postMessage API.
+The blocker for sandboxing is downloads: threejs_template.html:507-525 defines
+saveAsPNG() and saveAsHTML(), both a.download plus a.click().

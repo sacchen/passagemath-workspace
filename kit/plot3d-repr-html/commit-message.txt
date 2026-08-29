@@ -1,0 +1,22 @@
+plot3d: add Graphics3d._repr_html_() for interactive 3D in notebooks
+
+#2698 gave Graphics3d a _repr_png_(), so plain Python notebooks like Colab
+and marimo show a static Tachyon render. They still cannot reach the Three.js
+viewer the Sage kernel gets. _rich_repr_threejs() builds the scene but returns
+an OutputSceneThreejs, a container absent from a plain passagemath-plot
+install.
+
+The page moves into _render_html_(**kwds), and _repr_html_() escapes it into
+an <iframe srcdoc>. _rich_repr_threejs() stays as the container wrapper.
+_repr_html_() forces online=True, because an offline copy resolves through a
+display backend and a plain kernel has none. save('.html') keeps its
+online=False default, so it still needs passagemath-repl unless called with
+online=True.
+
+Doctests in base.pyx go from 406 to 416. A tox check in pkgs/sagemath-plot
+renders a sphere with sage.repl blocked; it fails with AttributeError on the
+unpatched build.
+
+Refs: https://github.com/passagemath/passagemath/issues/2236
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

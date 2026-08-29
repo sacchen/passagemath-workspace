@@ -1,0 +1,175 @@
+
+calculus/calculus.py
+  - toplevel (imported line 2708): used 1 time(s) (e.g. lines [2721])
+
+categories/bimodules.py
+  - RR (imported line 119): used 1 time(s) (e.g. lines [123])
+
+cli/notebook_cmd.py
+  - main (imported line 40): used 1 time(s) (e.g. lines [51])
+
+combinat/partition.py
+  - flint_number_of_partitions (imported line 10058): used 1 time(s) (e.g. lines [10060])
+  - have_dot2tex (imported line 5647): used 1 time(s) (e.g. lines [5649])
+
+combinat/root_system/cartan_matrix.py
+  - Base (imported line 47): used 1 time(s) (e.g. lines [53])
+
+doctest/control.py
+  - sage_docbuild (imported line 916): used 1 time(s) (e.g. lines [918])
+  - sage_setup (imported line 911): used 1 time(s) (e.g. lines [913])
+
+doctest/external.py
+  - Array (imported line 464): used 2 time(s) (e.g. lines [466, 467])
+
+doctest/forker.py
+  - signal (imported line 1507): used 34 time(s) (e.g. lines [1965, 1965, 2147])
+
+doctest/reporting.py
+  - SIGKILL (imported line 77): used 1 time(s) (e.g. lines [529])
+  - SIGQUIT (imported line 77): used 1 time(s) (e.g. lines [527])
+
+doctest/util.py
+  - NoSuchProcess (imported line 308): used 1 time(s) (e.g. lines [314])
+  - Process (imported line 308): used 1 time(s) (e.g. lines [313])
+  - ZombieProcess (imported line 308): used 1 time(s) (e.g. lines [314])
+
+env.py
+  - sage (imported line 152): used 2 time(s) (e.g. lines [154, 387])
+  - sage_wheels (imported line 236): used 1 time(s) (e.g. lines [635])
+
+geometry/convex_set.py
+  - SR (imported line 862): used 1 time(s) (e.g. lines [864])
+
+geometry/polyhedron/base3.py
+  - sage (imported line 1838): used 1 time(s) (e.g. lines [1840])
+
+geometry/polyhedron/base5.py
+  - AA (imported line 1070): used 4 time(s) (e.g. lines [1742, 1760, 1753])
+  - QuadraticField (imported line 1751): used 2 time(s) (e.g. lines [1753, 1755])
+  - RDF (imported line 2606): used 3 time(s) (e.g. lines [1760, 1079, 2608])
+
+geometry/polyhedron/base6.py
+  - sage (imported line 749): used 1 time(s) (e.g. lines [751])
+
+graphs/generic_graph.py
+  - Reals (imported line 474): used 2 time(s) (e.g. lines [481, 10468])
+  - canonical_form (imported line 25728): used 2 time(s) (e.g. lines [25741, 25736])
+
+groups/matrix_gps/linear.py
+  - LinearMatrixGroup_gap (imported line 179): used 1 time(s) (e.g. lines [282])
+
+manifolds/calculus_method.py
+  - sympy (imported line 33): used 1 time(s) (e.g. lines [72])
+
+manifolds/chart_func.py
+  - sympy (imported line 50): used 18 time(s) (e.g. lines [1644, 1798, 1841])
+
+manifolds/subsets/pullback.py
+  - C_Polyhedron (imported line 311): used 1 time(s) (e.g. lines [844])
+  - NNC_Polyhedron (imported line 311): used 1 time(s) (e.g. lines [844])
+
+matrix/matrix_space.py
+  - SR (imported line 398): used 1 time(s) (e.g. lines [254])
+  - matrix_complex_double_dense (imported line 203): used 1 time(s) (e.g. lines [332])
+  - matrix_gf2e_dense (imported line 220): used 1 time(s) (e.g. lines [318])
+  - matrix_gfpn_dense (imported line 228): used 1 time(s) (e.g. lines [230])
+  - matrix_integer_dense (imported line 178): used 1 time(s) (e.g. lines [306])
+  - matrix_mod2_dense (imported line 212): used 1 time(s) (e.g. lines [316])
+  - matrix_modn_dense_double (imported line 235): used 3 time(s) (e.g. lines [352, 353, 354])
+  - matrix_modn_dense_float (imported line 235): used 3 time(s) (e.g. lines [346, 347, 348])
+  - matrix_rational_dense (imported line 186): used 1 time(s) (e.g. lines [309])
+  - matrix_real_double_dense (imported line 194): used 1 time(s) (e.g. lines [329])
+
+misc/cython.py
+  - Distribution (imported line 363): used 1 time(s) (e.g. lines [447])
+  - Extension (imported line 363): used 1 time(s) (e.g. lines [382])
+
+misc/latex.py
+  - Numbers (imported line 2177): used 1 time(s) (e.g. lines [2197])
+
+misc/latex_macros.py
+  - toplevel (imported line 86): used 1 time(s) (e.g. lines [99])
+
+misc/sage_eval.py
+  - toplevel (imported line 175): used 2 time(s) (e.g. lines [200, 203])
+
+misc/sagedoc.py
+  - sage (imported line 855): used 5 time(s) (e.g. lines [1744, 803, 804])
+  - sphinxify (imported line 244): used 2 time(s) (e.g. lines [1545, 1617])
+  - toplevel (imported line 772): used 1 time(s) (e.g. lines [798])
+
+misc/sageinspect.py
+  - SAGE_SRC (imported line 1348): used 1 time(s) (e.g. lines [286])
+  - import_machinery (imported line 120): used 1 time(s) (e.g. lines [1305])
+
+modular/cusps.py
+  - pari (imported line 45): used 2 time(s) (e.g. lines [1007, 1007])
+
+parallel/use_fork.py
+  - reload (imported line 354): used 1 time(s) (e.g. lines [369])
+
+quadratic_forms/binary_qf.py
+  - pari (imported line 63): used 1 time(s) (e.g. lines [1807])
+
+repl/interpreter.py
+  - line_profiler (imported line 843): used 1 time(s) (e.g. lines [845])
+
+repl/ipython_extension.py
+  - all_cmdline (imported line 623): used 1 time(s) (e.g. lines [627])
+  - sage (imported line 592): used 1 time(s) (e.g. lines [108])
+
+repl/ipython_kernel/widgets_sagenb.py
+  - Color (imported line 137): used 3 time(s) (e.g. lines [136, 141, 584])
+
+rings/finite_rings/integer_mod_ring.py
+  - PariError (imported line 79): used 1 time(s) (e.g. lines [1168])
+  - pari (imported line 79): used 1 time(s) (e.g. lines [1114])
+
+rings/infinity.py
+  - LazyWrapper (imported line 713): used 1 time(s) (e.g. lines [1162])
+  - SR (imported line 1787): used 2 time(s) (e.g. lines [1271, 1270])
+
+rings/number_field/number_field.py
+  - pari (imported line 158): used 27 time(s) (e.g. lines [6280, 5134, 6522])
+
+rings/padics/padic_extension_leaves.py
+  - pAdicZZpXCAElement (imported line 53): used 2 time(s) (e.g. lines [292, 659])
+  - pAdicZZpXCRElement (imported line 53): used 4 time(s) (e.g. lines [146, 206, 546])
+  - pAdicZZpXFMElement (imported line 53): used 2 time(s) (e.g. lines [347, 714])
+  - qAdicCappedAbsoluteElement (imported line 60): used 1 time(s) (e.g. lines [297])
+  - qAdicCappedRelativeElement (imported line 60): used 2 time(s) (e.g. lines [151, 211])
+  - qAdicFixedModElement (imported line 60): used 1 time(s) (e.g. lines [352])
+  - qAdicFloatingPointElement (imported line 60): used 2 time(s) (e.g. lines [418, 468])
+
+rings/polynomial/multi_polynomial_ideal.py
+  - StdOutContext (imported line 257): used 2 time(s) (e.g. lines [433, 1496])
+  - magma_gb_standard_options (imported line 268): used 1 time(s) (e.g. lines [384])
+  - singular_default (imported line 257): used 5 time(s) (e.g. lines [641, 1457, 3364])
+  - singular_gb_standard_options (imported line 257): used 6 time(s) (e.g. lines [982, 1366, 1917])
+
+rings/polynomial/multi_polynomial_sequence.py
+  - singular_gb_standard_options (imported line 178): used 3 time(s) (e.g. lines [1513, 1613, 186])
+
+rings/polynomial/polynomial_ring.py
+  - GF2X_BuildSparseIrred_list (imported line 3643): used 1 time(s) (e.g. lines [3677])
+  - PolynomialRealDense (imported line 2229): used 1 time(s) (e.g. lines [2231])
+  - Polynomial_complex_arb (imported line 2241): used 1 time(s) (e.g. lines [2243])
+  - Polynomial_rational_flint (imported line 2216): used 1 time(s) (e.g. lines [2218])
+  - Polynomial_real_arb (imported line 2235): used 1 time(s) (e.g. lines [2237])
+
+rings/polynomial/polynomial_ring_constructor.py
+  - MPolynomialRing_libsingular (imported line 906): used 1 time(s) (e.g. lines [908])
+  - padic_base_leaves (imported line 27): used 4 time(s) (e.g. lines [830, 832, 834])
+
+rings/quotient_ring_element.py
+  - FeatureNotPresentError (imported line 23): used 1 time(s) (e.g. lines [31])
+
+schemes/elliptic_curves/ell_point.py
+  - pari (imported line 162): used 12 time(s) (e.g. lines [754, 756, 4247])
+
+schemes/elliptic_curves/mod_poly.py
+  - ClassicalModularPolynomialDatabase (imported line 146): used 2 time(s) (e.g. lines [149, 123])
+
+schemes/hyperelliptic_curves/monsky_washnitzer.py
+  - Profiler (imported line 1794): used 1 time(s) (e.g. lines [3713])

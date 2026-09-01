@@ -47,6 +47,9 @@ Every checkable claim that will appear in the issue, commit, or PR body.
 
 ## Red team
 
+Filled in from `playbooks/redteam.md`, after each pass, with what was
+attacked and what survived. Ticking the boxes is not the stage.
+
 - [ ] relevance:
 - [ ] scope:
 - [ ] accuracy:

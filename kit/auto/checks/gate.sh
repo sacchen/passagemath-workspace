@@ -68,17 +68,7 @@ else
 fi
 
 section "7. red-team record"
-missing=""
-for axis in relevance scope accuracy approach execution source-style style wording; do
-    grep -qiE "^-?\s*\[x\]\s*$axis\b" "$TASK" || missing="$missing $axis"
-done
-if [ -n "$missing" ]; then
-    echo "FAIL  red team not recorded on the task for:$missing"
-    echo "      see playbooks/redteam.md; each axis needs a '- [x] <axis>: <what was attacked, what survived>' line"
-    rc=1
-else
-    echo "ok    all eight axes recorded"
-fi
+python3 "$HERE/redteam_record.py" "$TASK" || rc=1
 
 echo
 if [ "$rc" -eq 0 ]; then

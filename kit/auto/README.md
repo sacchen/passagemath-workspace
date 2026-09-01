@@ -68,7 +68,7 @@ everything.
 | public-prose style and wording | `prose.py` | pronouns, em dashes, AI speak, hard-wrapped paragraphs, `Matthias` instead of `mkoeppe`, generated-by footers, escaped backticks |
 | accuracy | `claims.py` | a categorical or numeric claim with no matching entry in the task's `## Evidence` section |
 | shortening drift | `drift.py` | a surviving sentence that got broader than the revision before it |
-| red team | `gate.sh` | fewer than eight recorded axes, including a separate source-style pass |
+| red team | `redteam_record.py` | fewer than eight recorded axes, including a separate source-style pass; or an axis line that reports a pass without saying what it found |
 
 `prose.py --kind {commit,pr,issue,comment}` also enforces the structural
 budget: paragraph counts, no headings, one code block.

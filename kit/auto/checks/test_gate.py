@@ -85,14 +85,22 @@ class GateTest(unittest.TestCase):
 
                 ## Red team
 
-                - [x] relevance: documentation path checked
-                - [x] scope: one declared file checked
-                - [x] accuracy: public claims checked
-                - [x] approach: narrower edit checked
-                - [x] execution: effective diff checked
-                - [x] source-style: checker clean and local block checked
-                - [x] style: public drafts checked
-                - [x] wording: scope checked
+                - [x] relevance: a reader of docs/example.rst hits the missing
+                  rendering note on every build; no other page states it.
+                - [x] scope: git diff names docs/example.rst and nothing else,
+                  matching the files list with no reformatting riding along.
+                - [x] accuracy: the one claim, that Three.js renders the scene,
+                  is the product spelling used by the upstream project.
+                - [x] approach: rejected a new section in favour of one sentence
+                  in the existing paragraph, which is the narrower edit.
+                - [x] execution: negative control recorded fail-on-unpatched, so
+                  the added line discriminates against the base revision.
+                - [x] source-style: source-style.sh is clean and the product name
+                  matches the capitalization used in the local block.
+                - [x] style: commit.txt and pr-body.md are subject plus one short
+                  paragraph, no headings and no bullet lists.
+                - [x] wording: the subject claims documentation only, and makes
+                  no timing or regression claim the diff cannot support.
                 """), encoding="utf-8")
             (artifacts / "commit.txt").write_text(
                 commit_message, encoding="utf-8",

@@ -26,4 +26,11 @@ PREFERENCE findings, park out-of-scope ones as new tasks, and never accept a
 finding that asks for more words.
 
 Write one `- [x] <axis>: <what was attacked, what survived, what changed>`
-line per axis on the task file. Set `state: redteamed`.
+line per axis on the task file, then set `state: redteamed`.
+
+Those eight lines are what the gate can see, which makes them the easy thing
+to optimize and the wrong thing to start from. Do the pass first and write
+down what it turned up. An axis where the attack found nothing says what was
+attacked and why it held; an axis that was never worked says so and the task
+stays at `implemented`. A full task file is not the deliverable, a change
+that survives mkoeppe is.

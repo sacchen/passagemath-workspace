@@ -16,6 +16,12 @@ Record each axis on the task file as a line the gate can read:
 An axis with nothing to say still gets a line saying that. Eight `[x]` lines
 are required before the gate will pass.
 
+The line is the receipt, not the work. `checks/redteam_record.py` rejects a
+line that reports a pass without saying what it found, because eight lines
+reading "checked" are cheaper to write than one real pass and used to score
+the same. Writing to satisfy that check instead of attacking the change is
+the same failure wearing a longer sentence.
+
 ## relevance
 
 Does anyone hit this? Name the install configuration and the user action.

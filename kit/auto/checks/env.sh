@@ -4,16 +4,42 @@
 #
 # Override any of these by exporting them before calling a check.
 
-SANDBOX="${PM_SANDBOX:-$HOME/foundry/sandbox/passagemath}"
-REPO="${PM_REPO:-$SANDBOX/passagemath}"
-WORKSPACE="${PM_WORKSPACE:-$HOME/foundry/sandbox/passagemath-workspace}"
+# This file sits at $WORKSPACE/kit/auto/checks/env.sh, so the workspace is
+# derivable and never has to be guessed. It used to be guessed, as
+# $HOME/foundry/sandbox/passagemath-workspace, which is not where every
+# checkout lives: on a machine where that guess was wrong, every check in the
+# pipeline failed on a path error until PM_WORKSPACE was exported by hand.
+_ENV_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE="${PM_WORKSPACE:-$(cd "$_ENV_DIR/../../.." && pwd)}"
 AUTO="$WORKSPACE/kit/auto"
 QUEUE="$AUTO/queue"
+
+SANDBOX="${PM_SANDBOX:-$HOME/foundry/sandbox/passagemath}"
+
+# The monorepo clone is a separate checkout, so it still has to be looked for.
+# Take the first candidate that actually contains src/sage rather than the
+# first that is merely a path, so a wrong default surfaces here and not four
+# checks later as an unreadable git error.
+_find_repo() {
+    local candidate
+    for candidate in "$SANDBOX/passagemath" \
+                     "$(dirname "$WORKSPACE")/passagemath" \
+                     "$(dirname "$WORKSPACE")/passagemath/passagemath"; do
+        if [ -d "$candidate/src/sage" ]; then echo "$candidate"; return; fi
+    done
+    echo "$SANDBOX/passagemath"
+}
+REPO="${PM_REPO:-$(_find_repo)}"
 
 # Default venv. Task files override with `venv:` in frontmatter.
 VENV="${PM_VENV:-$SANDBOX/.venv}"
 
 die() { echo "FATAL: $*" >&2; exit 2; }
+
+# Collapse $HOME to ~ before printing a path into anything that gets committed.
+# kit/ is public and kit/PRIVACY.md says local usernames do not go in it, so a
+# generated prompt saved under artifacts/ must not carry /home/<user>.
+tilde() { echo "${1/#$HOME/\~}"; }
 
 # Read one frontmatter key out of a task file. Handles plain scalars and the
 # YAML block scalars `>`, `>-`, `|`, `|-`, whose value sits on the following

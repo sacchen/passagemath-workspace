@@ -117,9 +117,16 @@ artifacts/<slug>/       repro.py, commit.txt, issue.md, pr-body.md
 artifacts/<slug>/revisions/   snapshots, for the drift check
 playbooks/*.md          what each stage does; the skills defer to these
 checks/*.sh, *.py       the gate
+checks/test_*.py        run with python3 -m unittest discover kit/auto/checks
 review-conventions.md   maintainer conventions learned from reviews
 ```
 
-Paths resolve through `checks/env.sh`. Override with `PM_SANDBOX`, `PM_REPO`,
-`PM_VENV`, `PM_BASE`. No absolute paths are committed; this repo is public
-(`kit/PRIVACY.md`).
+Paths resolve through `checks/env.sh`. The workspace is derived from that
+file's own location, so a fresh clone runs the gate with no configuration;
+the monorepo checkout is looked for beside it and next to `PM_SANDBOX`, and
+the first candidate holding `src/sage` wins. Override any of it with
+`PM_WORKSPACE`, `PM_SANDBOX`, `PM_REPO`, `PM_VENV`, `PM_BASE`.
+
+No absolute paths are committed; this repo is public (`kit/PRIVACY.md`).
+`scope-prompt.sh` collapses `$HOME` to `~` for that reason, since its output
+is saved under `artifacts/_prompts/`.

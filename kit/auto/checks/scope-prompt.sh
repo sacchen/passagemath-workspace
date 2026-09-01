@@ -8,8 +8,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$HERE/env.sh"
 
 echo "Work the scope stage of the passagemath contribution pipeline."
-echo "Read $WORKSPACE/AGENTS.md and $AUTO/playbooks/scope.md first, then follow them."
-echo "The monorepo clone is at $REPO. Read it; do not modify it."
+echo "Read $(tilde "$WORKSPACE")/AGENTS.md and $(tilde "$AUTO")/playbooks/scope.md first, then follow them."
+echo "The monorepo clone is at $(tilde "$REPO"). Read it; do not modify it."
 echo
 echo "The queue already holds these, so do not re-scope them:"
 for f in "$QUEUE"/*.md; do

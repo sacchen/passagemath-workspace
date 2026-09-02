@@ -211,6 +211,25 @@ Both were silent, and both made a green result meaningless.
   Exception: return None` swallows real errors, kept because `_repr_png_` from
   #2698 does the same and the tox check reruns `_render_html_()` to surface the
   traceback.
+- [x] source-style: ran after mkoeppe's review, which is the wrong order and is
+  why he found these first. `checks/source-style.sh` on the branch against
+  `upstream/main` reported 3 errors and 4 warnings; his five comments cover
+  five of the seven. product-case (ERROR) on `features/threejs.py:77`,
+  `base.pyx:476` and `base.pyx:715`: `three.js` -> `Three.js`, and 77 and 715
+  are the two he did not comment on. package-markup (WARN) on
+  `features/threejs.py:82` and `base.pyx:480`: both name the distribution in
+  prose, not a requirement specifier, so both take `**passagemath-plot**`.
+  class-role (WARN) on `base.pyx:709`: `Graphics3d` is documented in this same
+  module, so `:class:` resolves; the line goes to 82 characters, under the
+  160 `max-line-length` in `src/tox.ini:186`, and no lint select carries E501.
+  config-alignment (WARN) on `tox.ini:85`: indented to the column the `!notest:`
+  command above it uses, 20 spaces, so the block reads as one group.
+  Sibling scan of the touched documentation: `three.js` survives at
+  `base.pyx:33`, `:2672` and `:2953`, none adjacent to a changed line, left
+  alone per the no-repository-wide-cleanup rule; `` `passagemath-plot[tachyon]` ``
+  at `base.pyx:203` and `:266` is extra syntax and correctly stays literal.
+  Re-run reports 0 errors, 0 warnings. `relint -c src/.relint.yml` and
+  `flake8 --select=RST` both exit 0 on the changed files.
 - [x] style: rewrote pr-body.md shorter after the first pass read as a pile of
   identifiers. Four short paragraphs, one point each, instead of three dense
   ones. `drift.py` caught six specifics dropped in that pass, and all six went
@@ -243,3 +262,6 @@ Both were silent, and both made a green result meaningless.
   clause, and the sandbox paragraph from three sentences to two; 356 words
 - 2026-08-29 red teamed on all seven axes; state -> redteamed
 - 2026-08-29 negative control run and passed; doctest counts corrected 406/416 -> 430/440; two pipeline bugs fixed (task_key block scalars, mapfile on bash 3.2)
+- 2026-08-30 source-style axis run for the first time, post-review: 7 findings,
+  5 of them mkoeppe's comments and 2 he missed (three.js at features/threejs.py:77
+  and base.pyx:715); all 7 fixed, checker back to 0/0, commit amended

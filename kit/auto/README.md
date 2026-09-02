@@ -79,9 +79,9 @@ a new doctest before copying the fix in gives a free unpatched control. It
 must fail there. A test that passes without the fix is decoration, and that
 mistake has been made here before.
 
-## The two failure modes this is built around
+## The failure modes this is built around
 
-Both come from reading past sessions in this repo, not from theory.
+All three come from reading past sessions in this repo, not from theory.
 
 **Shortening breaks claims.** About a fifth of all instructions in those
 sessions were some form of "make it shorter". The draft came out long, got
@@ -100,13 +100,34 @@ BLOCKER, NIT, and PREFERENCE so there is something to sort on, and
 against the code before acting: outside reviewers have been confidently wrong
 here in both directions.
 
+**A trailing checklist eats the prompt above it.** A detailed output spec at
+the end of a prompt is the most concrete and most recent thing in it, and a
+model will optimize for it in preference to requirements spread through the
+body. `scope-prompt.sh` used to end by asking for a task file "at state
+scoped" with "a repro you actually ran", contradicting the read-only,
+`state: proposed` rule it had stated forty lines earlier; the tail is the
+half that gets followed. Three rules follow from that.
+
+Put the operative constraint last, not the output format. Keep the format
+spec short, and say plainly that it is not the job. And where a check reads
+the output, make it read for substance: `gate.sh` used to grep for eight
+`- [x] <axis>:` lines, which meant eight lines reading "checked" scored the
+same as a real red team. `redteam_record.py` rejects those now.
+
+It does not fix the underlying problem, and should not be read as fixing it.
+A model that wants to pass can still write eight padded sentences; the check
+raises the price of faking from nothing to a little, and that is all. Every
+mechanical check on a reporting field has this ceiling, which is why the
+playbooks say in words what the checks cannot enforce.
+
 ## The eight red-team axes
 
 `playbooks/redteam.md`. relevance, scope, accuracy, approach, execution,
 source-style, style, wording. Each needs a `- [x] <axis>: ...` line on the
 task file saying what was attacked and what survived. `source-style` reads
 changed source documentation and configuration; `style` reads the public
-drafts.
+drafts. The line is the receipt for the pass, not the pass; `checks/redteam_record.py`
+rejects a line that only reports a verdict.
 
 ## Layout
 

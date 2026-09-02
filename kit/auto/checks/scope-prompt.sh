@@ -48,7 +48,8 @@ means it stays a note:
   a. a user-visible symptom, with the install configuration that produces it
   b. a root cause named at the level of functions and fields
   c. the exact file list the diff would touch
-  d. a repro you actually ran, with its exit code recorded
+  d. a repro written to kit/auto/artifacts/<slug>/repro.py, with
+     expected_failure: filled in. You write it; you do not run it.
 
 Rank by impact, not by size. Record a tier (beginner, intermediate,
 advanced) as an effort estimate only; it is not a filter. A one-line fix that
@@ -74,9 +75,17 @@ queue, and do not lower the bar.
 
 Do not write to GitHub: no comments, no issues, no PRs. Read only.
 
-Output one task file per candidate, in the exact format of
-kit/auto/queue/_TEMPLATE.md, at state scoped. Say which of the four bars each
-candidate cleared and how you checked. Where you are not certain, say so
+Hand back one task file per candidate, in the format of
+kit/auto/queue/_TEMPLATE.md, at state proposed. Say which of the four bars
+each candidate cleared and how you checked. Where you are not certain, say so
 rather than asserting. Never write "none", "all", or "every" about a search
 result unless you confirmed the result set was complete.
+
+## The format is the smallest part of this
+
+Everything above is the job. A correctly formatted task file for a candidate
+you did not actually search out is worse than returning nothing: it reads as
+a finding, and the next stage spends a pass discovering it is empty. If you
+have to choose, spend the effort on working the four sources in order and
+reporting honestly what each one returned, not on the shape of the output.
 BODY

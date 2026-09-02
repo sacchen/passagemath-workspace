@@ -42,3 +42,9 @@ characters, states the user-visible effect. Body is three short paragraphs:
 the bug, the change, the test. Ends `Fixes #NNNN`.
 
 Set `state: implemented` and log the date.
+
+The commit format is the cheapest part of this stage and it is the part
+written down last, which makes it the easy thing to finish on. Step 5 is the
+one that costs: a commit shaped perfectly around a false-green `sage -t` run
+is the failure this playbook exists to prevent, and red team will find it a
+stage later at the price of redoing the work. Prove the edit is live first.

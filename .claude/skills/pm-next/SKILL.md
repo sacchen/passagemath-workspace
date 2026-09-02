@@ -21,9 +21,11 @@ finishes before new work starts:
    `scoped` or `blocked`. An outside agent proposed it and could not execute.
 5. nothing above -> run `pm-scope`
 
-Skip `blocked`, `parked`, and `ready`. When every task is `ready` or
-`blocked` and `pm-scope` finds nothing, report that the queue is drained and
-stop; do not lower the bar to produce a task.
+Skip `blocked`, `parked`, `ready`, and `shipped`. `ready` means the stage
+stopped for a human to push; `shipped` means they did, and `ship-commands.sh`
+told them to record it. Neither comes back to this loop. When every task is
+one of those four and `pm-scope` finds nothing, report that the queue is
+drained and stop; do not lower the bar to produce a task.
 
 ## Run
 

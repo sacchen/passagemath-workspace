@@ -35,3 +35,9 @@ Do these in order.
 
 Do not push, file, or post. Report in three lines: what moved, what is next,
 what is blocked.
+
+Those three lines are the shortest part of the stage, not the point of it.
+Step 3 is the point, and it is the one that gets skipped, because a tidy
+report reads as a finished handoff whether or not anything was written down.
+No check runs here. If the next session has to re-derive something this one
+already knew, this stage failed regardless of how the report looked.

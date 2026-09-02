@@ -1,6 +1,6 @@
 ---
 slug: short-kebab-name
-state: proposed            # proposed -> scoped -> implemented -> redteamed -> ready | blocked | parked
+state: proposed            # proposed -> scoped -> implemented -> redteamed -> ready -> shipped | blocked | parked
 issue:                     # upstream issue number, blank until filed
 pr:                        # upstream PR number, blank until opened (human opens it)
 branch: fix/short-kebab-name

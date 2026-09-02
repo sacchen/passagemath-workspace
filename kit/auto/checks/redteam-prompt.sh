@@ -66,6 +66,11 @@ give the narrower wording, not a caveat.
 
 If you find no BLOCKER, say so in one line.
 
+The buckets are only how to label what you already found. The eight axes are
+the work, and a clean, well-sorted list that skipped one of them is a failed
+review, not a short one. If you ran out of room, say which axes you actually
+worked and which you did not, rather than filling all eight.
+
 ---- task file ----
 $(cat "$TASK")
 PROMPT

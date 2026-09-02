@@ -1,10 +1,11 @@
 Work the scope stage of the passagemath contribution pipeline.
-Read ~/foundry/sandbox/passagemath-workspace/AGENTS.md and ~/foundry/sandbox/passagemath-workspace/kit/auto/playbooks/scope.md first, then follow them.
-The monorepo clone is at ~/foundry/sandbox/passagemath/passagemath. Read it; do not modify it.
+Read ~/Foundry/passagemath-workspace/AGENTS.md and ~/Foundry/passagemath-workspace/kit/auto/playbooks/scope.md first, then follow them.
+The monorepo clone is at ~/Foundry/passagemath. Read it; do not modify it.
 
 The queue already holds these, so do not re-scope them:
   - eval-grid-leak (scoped): fix/eval-grid-leak
-  - graphics3d-repr-html (implemented): feat/graphics3d-repr-html
+  - graphics3d-repr-html (shipped): feat/graphics3d-repr-html
+  - html-fragment-colab-2384 (parked): fix/html-fragment-repr-html-2384
   - polynomial-quotient-ring-needs-complex-double (scoped): fix/polynomial-quotient-ring-needs-complex-double
 
 ## Read only. Execute nothing.
@@ -37,7 +38,8 @@ means it stays a note:
   a. a user-visible symptom, with the install configuration that produces it
   b. a root cause named at the level of functions and fields
   c. the exact file list the diff would touch
-  d. a repro you actually ran, with its exit code recorded
+  d. a repro written to kit/auto/artifacts/<slug>/repro.py, with
+     expected_failure: filled in. You write it; you do not run it.
 
 Rank by impact, not by size. Record a tier (beginner, intermediate,
 advanced) as an effort estimate only; it is not a filter. A one-line fix that
@@ -63,8 +65,16 @@ queue, and do not lower the bar.
 
 Do not write to GitHub: no comments, no issues, no PRs. Read only.
 
-Output one task file per candidate, in the exact format of
-kit/auto/queue/_TEMPLATE.md, at state scoped. Say which of the four bars each
-candidate cleared and how you checked. Where you are not certain, say so
+Hand back one task file per candidate, in the format of
+kit/auto/queue/_TEMPLATE.md, at state proposed. Say which of the four bars
+each candidate cleared and how you checked. Where you are not certain, say so
 rather than asserting. Never write "none", "all", or "every" about a search
 result unless you confirmed the result set was complete.
+
+## The format is the smallest part of this
+
+Everything above is the job. A correctly formatted task file for a candidate
+you did not actually search out is worse than returning nothing: it reads as
+a finding, and the next stage spends a pass discovering it is empty. If you
+have to choose, spend the effort on working the four sources in order and
+reporting honestly what each one returned, not on the shape of the output.

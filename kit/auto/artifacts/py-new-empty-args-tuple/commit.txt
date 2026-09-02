@@ -1,0 +1,21 @@
+sage.ext.stdsage: pass an empty tuple to tp_new
+
+PY_NEW passed NULL for the positional arguments to tp_new, which
+requires a tuple. Cython 3.3 routes tp_new through
+__Pyx_CallTpnewAsVectorcall(), which reads the argument tuple's size
+with no NULL check. Compiled at -O2 that read lands above the one check
+the function does make, on the keyword dict.
+
+The call now passes (), which Cython compiles to the shared
+__pyx_empty_tuple, so the construction path stays a single load rather
+than an allocation. PY_SET_TP_NEW's runtime tp_new replacement is
+unaffected.
+
+This explains the import crash in sage.rings.padics.common_conversion.
+Integer and RealDoubleElement replace tp_new at import with a cdef
+fast_tp_new that ignores its arguments; Rational does not, and line 52
+constructs one at module level.
+
+Refs: https://github.com/passagemath/passagemath/pull/2762
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,24 @@
+plot3d: free eval_grid() C arrays when evaluation raises
+
+ParametricSurface.eval_grid() allocates ulist and vlist through
+to_double_array() and frees them only on the normal exit. Six sig_check()
+calls sit between the allocation and the free, and eval_c(), a
+Wrapper_rdf.call_c() and any Python component function can raise as well.
+Every one of those paths leaves both arrays allocated, so memory grew on
+each interrupted or failed 3D plot evaluation.
+
+A try/finally around the body covers both allocation sites. The pointers
+are NULL-initialized and sig_free(NULL) is free(NULL), so one finally
+serves the subclass branch and the fast tuple branch alike. The change is
+an indentation of the existing body; git diff -w reports 40 added lines
+and 1 removed.
+
+A doctest in triangulate() drives both branches that allocate: a subclass
+whose eval() raises, and a tuple of two Wrapper_rdf components with one
+raising callable. It asserts that the resident set high-water mark grows
+by under 4 MB across 50 failed triangulations. The unpatched extension
+reports 35078144 bytes on aarch64 Linux.
+
+Fixes #2777
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

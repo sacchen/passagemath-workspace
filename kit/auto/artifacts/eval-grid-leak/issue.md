@@ -1,0 +1,7 @@
+ParametricSurface.eval_grid() leaks ulist and vlist when evaluation raises
+
+`ParametricSurface.eval_grid()` in `src/sage/plot/plot3d/parametric_surface.pyx` allocates `ulist` and `vlist` through `to_double_array()`, then calls `sig_free()` on both only after the evaluation loops finish. Six `sig_check()` calls sit between the allocation and the free, and `eval_c()`, `Wrapper_rdf.call_c()` and any Python component function can raise as well. Every one of those paths skips both frees, so a `KeyboardInterrupt` out of a slow plot, or an error from a user-supplied function, leaks the arrays. Each failure leaks 8 bytes per grid line in each direction and nothing reclaims it, so the loss accumulates over repeated renders.
+
+Two of the three evaluation branches allocate. The branch where `self.f` is None is the path taken by the library's `ParametricSurface` subclasses, `Sphere`, `Cylinder`, `Cone`, `Torus` and `MoebiusStrip`, and the fast tuple branch allocates when at least one component is a `Wrapper_rdf`. A tuple of plain Python callables reaches neither `to_double_array()` call.
+
+To reproduce, subclass `ParametricSurface` with an `eval()` that raises, call `triangulate()` in a loop, and watch `resource.getrusage(resource.RUSAGE_SELF).ru_maxrss`. Fifty failed triangulations of a 100000 by 2 grid grow the high-water mark by about 40 MB on current `main` and leave it flat once both frees are reached on the exception path.

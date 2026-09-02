@@ -1,0 +1,12 @@
+Render Sage formulas in plain Python notebooks
+
+Plain Python kernels fall back to text for Sage formulas because SageObject
+has no standard IPython LaTeX representation hook.
+
+Add a macro-aware LaTeX hook while preserving custom rich output and Sage
+kernel display preferences. Keep non-Sage IPython representations unchanged.
+
+Test exact MIME payloads, fallback without optional categories, and the Sage
+formatter boundary between plain and LaTeX output.
+
+Fixes #2236
